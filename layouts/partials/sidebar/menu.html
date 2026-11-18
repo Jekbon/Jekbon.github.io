@@ -1,0 +1,8 @@
+<nav class="panel-section" aria-label="主导航">
+    <div class="panel-section-label">// 导航</div>
+    <a href="{{ .Site.BaseURL }}" class="panel-link {{ if .IsHome }}active{{ end }}">首页</a>
+    {{ range .Site.Params.menu }}
+        {{ $url := .URL }}
+        <a href="{{ $url }}" class="panel-link {{ if and (ne $.RelPermalink "/") (hasPrefix $.RelPermalink $url) }}active{{ end }}">{{ .Name }}</a>
+    {{ end }}
+</nav>

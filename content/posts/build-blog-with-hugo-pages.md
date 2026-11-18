@@ -3,8 +3,7 @@ title: "用 Hugo + GitHub Pages 搭建这个博客"
 date: 2026-11-18T09:30:00+08:00
 draft: false
 tags: ["Hugo", "GitHub Pages", "CI/CD"]
-summary: "记录本站的搭建过程：选型理由、目录结构、以及推送即发布的 GitHub Actions 流水线。"
-ShowToc: true
+description: "记录本站的搭建过程：选型理由、目录结构、以及推送即发布的 GitHub Actions 流水线。"
 ---
 
 ## 为什么选 Hugo

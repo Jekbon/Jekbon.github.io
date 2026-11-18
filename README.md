@@ -1,103 +1,231 @@
 # Jekbon's Blog
 
-个人博客，[https://jekbon.github.io](https://jekbon.github.io)
+个人博客 → [https://jekbon.github.io](https://jekbon.github.io)
 
-- **框架**：[Hugo](https://gohugo.io/)（单二进制，构建 < 100ms）
-- **主题**：[Papermod](https://github.com/adityatelange/hugo-Papermod)（git submodule）
-- **发布**：push 到 `main` → GitHub Actions 构建 → GitHub Pages 上线，约 1 分钟
+| 组件 | 版本 | 作用 |
+|---|---|---|
+| Hugo extended | 0.170.1 | 静态站点生成，构建 < 1s |
+| [Rusty Poison](https://github.com/RustyDaemon/rusty-poison) | 0.4.2 | 主题（dark-first，侧栏布局，锈橙强调色） |
+| Tailwind CSS | 4.2.4 | 主题样式管道（Hugo `css.TailwindCSS`） |
+| Pagefind | 1.5.2 | 静态全文搜索索引 |
+| Mermaid | 11.15.0 | 图表（按需懒加载） |
+
+发布链路：push 到 `main` → GitHub Actions 构建 → GitHub Pages，约 2 分钟。
 
 ## 本地环境
 
 ```bash
-brew install hugo
+brew install hugo node
+npm ci          # 装 Tailwind / Pagefind / Mermaid，首次或依赖变更后执行
 ```
 
-版本需与 `.github/workflows/hugo.yaml` 里的 `HUGO_VERSION` 一致（当前 `0.170.1`），
-否则可能出现「本地正常、线上失败」。
+Hugo 必须 **extended 版 ≥ 0.158.0**（主题用了 `css.TailwindCSS` 管道），
+且版本要与 `.github/workflows/hugo.yaml` 里的 `HUGO_VERSION` 一致，
+否则会出现「本地正常、线上失败」。
+
+## 日常命令
+
+```bash
+npm run dev      # 本地预览 http://localhost:1313（草稿也渲染）
+npm run build    # 生产构建 + 生成 Pagefind 索引
+npm run search   # 只重建搜索索引
+```
+
+> `npm run dev` 下**站内搜索不可用**：Pagefind 的索引写在 `public/` 里，
+> 而 dev 模式不落盘构建产物。要测搜索得 `npm run build && npx serve public`。
 
 ## 写一篇文章
 
 ```bash
-./new-post.sh my-post-title "文章标题"   # 生成 content/posts/my-post-title.md（draft: true）
-hugo server -D                           # http://localhost:1313 预览，-D 会渲染草稿
+./new-post.sh k8s-pvc-pending "PVC 一直 Pending 的排查"
+npm run dev                      # 边写边看
 ```
 
-写完后把文件头的 `draft: true` 改成 `false`（或删掉该行），然后：
+front matter 字段（主题认这些）：
+
+```yaml
+---
+title: "文章标题"
+date: 2026-11-18T09:30:00+08:00   # 必须带时区偏移
+draft: false
+description: "标题下方的一句话引子"
+tags: ["Kubernetes", "排障"]
+series: "K8s 排障实录"             # 可选，同系列文章会互相列出
+featuredImage: "/images/cover.png" # 可选，放在 static/images/
+hideToc: true                      # 可选，单篇关掉右侧目录
+project: false                     # true 则归入 projects 而非文章
+---
+```
+
+写完把 `draft: true` 改成 `false`，然后：
 
 ```bash
-git add -A && git commit -m "post: 文章标题" && git push
+git add -A && git commit -m "post: 标题" && git push
 ```
 
-推完约 1 分钟自动上线。查看构建状态：
+查看发布进度：
 
 ```bash
 gh run list --limit 5
 gh run watch
 ```
 
-## 更新主题
+## Markdown 增强
 
-```bash
-git submodule update --remote --merge themes/Papermod
-hugo --minify          # 确认没有新告警
-git add -A && git commit -m "chore: bump Papermod" && git push
+**GitHub 风格提示块**（主题原生支持）：
+
+```md
+> [!NOTE]
+> 普通说明
+
+> [!WARNING]
+> 需要注意的风险
+
+> [!TIP]
+> 更省事的做法
 ```
+
+**Mermaid 图表**：
+
+````md
+```mermaid
+graph LR
+  A --> B --> C
+```
+````
+
+**折叠块**（主题 shortcode）：
+
+```md
+{{</* details summary="点开看完整日志" */>}}
+日志内容
+{{</* /details */>}}
+```
+
+**数学公式**：`$行内$`、`$$块级$$` 已配置透传，但主题**不带 KaTeX 运行时**，
+要真正渲染得自己加载 KaTeX/MathJax。
 
 ## 配色
 
-默认**纯黑背景**。覆盖层在 `assets/css/extended/dark.css`（Papermod 会把
-`assets/css/extended/*.css` 合并到主题样式**之后**，同特异性靠后胜出，所以能覆盖）：
+暗色是主题默认，配色 token 在主题的 `assets/css/main.css` 的 `@theme` 块里：
 
-| 想怎么改 | 做法 |
-|---|---|
-| 调回官方深灰 `rgb(29,30,32)` | 删掉 `dark.css` 这一个文件，其他不动 |
-| 微调黑度 | 只改 `--theme` 一行；`rgb(0,0,0)` 最黑，`rgb(18,18,20)` 稍柔和 |
-| 改正文颜色 | `--content`（正文）、`--primary`（标题） |
+| token | 默认值 | 用途 |
+|---|---|---|
+| `--color-bg-dark` | `#0e0f10` | 正文区背景 |
+| `--color-bg-soft-dark` | `#161719` | 次级背景 |
+| `--color-bg-raised-dark` | `#1c1d20` | 卡片 / 代码块 |
+| `--color-panel` | `#0a0b0c` | 侧边栏（恒定深色，不随明暗切换） |
+| `--color-fg-dark` | `#ececec` | 正文文字 |
 
-正文刻意用 `rgb(197,199,204)` 而不是纯白——纯黑配纯白对比过强，长时间阅读会光晕刺眼。
-
-右上角按钮可临时切亮色，选择存在浏览器 `localStorage` 的 `pref-theme` 键里。
-如果哪次打开发现变白了，多半是之前点过切换，控制台执行
-`localStorage.removeItem("pref-theme")` 再刷新即可。
+改法：在站点根建 `assets/css/main.css`（同名覆盖主题文件），复制 `@theme` 块改数值。
+想要更黑就把 `--color-bg-dark` 改成 `#000000`。
 
 ## 踩过的坑
 
-**1. 文章「消失」——日期写成了未来时间**
+**1. 首次构建报 `tailwindcss is not whitelisted`**
 
-`hugo.toml` 里 `buildFuture = false`。如果 front matter 的 `date` 晚于当前时刻，
-文章会被**静默跳过**：不报错、不告警，首页和归档都看不到它。
-`./new-post.sh` 用当前时间生成日期就是为了避开这个。排查命令：
+Hugo 默认的 `security.exec.allow` 不含 `tailwindcss`，而主题的 `css.TailwindCSS`
+要执行它。必须在**项目自己的** `hugo.toml` 里放开（`[security]` 不会从主题合并），
+且 `allow` 是替换而非追加，官方条目要一并写上：
 
-```bash
-hugo list future      # 列出所有因未来日期被排除的文章
+```toml
+[security]
+  [security.exec]
+    allow = ['^(dart-)?sass$', '^go$', '^git$', '^node$', '^postcss$', '^tailwindcss$']
 ```
 
-想定时发布（先写好、到点自动出现），把 `buildFuture` 改成 `true` 即可。
+**2. 直接跑 `hugo` 报找不到 tailwindcss**
 
-**2. 首页不显示任何文章——缺 `mainSections`**
+`tailwindcss` 装在 `node_modules/.bin/`，该目录只在 **npm script 执行期间**才被加进 PATH。
+所以构建必须走 `npm run build`，CI 里也一样，不能直接调 `hugo`。
 
-Papermod 用 `where site.RegularPages "Type" "in" site.Params.mainSections` 取首页文章。
-`hugo.toml` 必须显式写：
+**3. 文章「消失」——日期是未来时间**
+
+`buildFuture` 默认 false，front matter 的 `date` 晚于当前时刻时文章会被**静默跳过**：
+不报错、不告警、首页和列表都看不到。排查：
+
+```bash
+hugo list future
+```
+
+`./new-post.sh` 用当前时间生成日期就是为了避开这个。想定时发布就设 `buildFuture = true`。
+
+**4. 首页不显示文章——缺 `front_page_content`**
 
 ```toml
 [params]
-mainSections = ["posts"]
+  front_page_content = ["posts"]
 ```
 
-漏掉这行不会报错，首页只会显示欢迎语，一篇文章都没有。
+漏掉不会报错，首页直接空白。
 
-**3. 线上构建拉不到主题——submodule 用了 SSH 地址**
+**5. 线上构建拉不到主题——submodule 用了 SSH 地址**
 
-`.gitmodules` 里的 URL 必须是 `https://`，不能是 `git@github.com:`。
-Actions runner 上没有你的 SSH 私钥，本地一切正常、线上 checkout 直接
+`.gitmodules` 里必须是 `https://`，不能是 `git@github.com:`。
+Actions runner 没有你的 SSH 私钥，本地正常、线上 checkout 直接
 `Permission denied (publickey)`。已写错的话：
 
 ```bash
-git config -f .gitmodules submodule.themes/Papermod.url \
-  https://github.com/adityatelange/hugo-Papermod.git
+git config -f .gitmodules submodule.themes/rusty-poison.url \
+  https://github.com/RustyDaemon/rusty-poison.git
 git submodule sync --recursive
 ```
 
-**4. `--minify` 破坏 RSS**
+**6. `--minify` 压坏 RSS**
 
-`hugo.toml` 里的 `[minify] disableXML = true` 别删，否则 `/index.xml` 会被压坏。
+`[minify] disableXML = true` 别删，否则 `/index.xml` 会坏掉。
+
+## 中文化
+
+主题**没有 i18n**（无 `i18n/` 目录，多语言支持的 PR #7 还没合并），界面文字全是硬编码英文。
+本站在 `layouts/` 下覆盖了 **20 个模板、59 处**文字，实现完整中文界面：
+
+| 区域 | 覆盖后 |
+|---|---|
+| 侧栏 | `// 导航`、`首页`、`// 链接`、`切换主题`、`● 在线 / 构建于 / 版本 / hugo` |
+| 顶栏 | `搜索文章…`（占位符与按钮） |
+| 文章页 | `本页目录`、`X 分钟阅读`、`X 字`、`2006年01月02日`、`// 所属系列：`、`· 第 X / Y 篇`、`// 相关文章`、`上一篇 / 下一篇` |
+| 列表页 | `// 2026` 年份分组、`项目` 徽标、taxonomy 标题（标签 / 系列 / 文章） |
+| 搜索弹窗 | `搜索文章…`、`输入关键词开始搜索`、`选择 / 打开 / 关闭` |
+| 404 页 | `守护进程找不到这个页面`、`返回首页 / 全部文章 / 浏览标签` |
+| 无障碍 | 所有 `aria-label`、`title` 也已中文化 |
+
+**刻意保留英文**的部分（翻译会破坏设计意图）：
+
+- 404 页的终端仿真块 `rusty@daemon:~$ resolve /path` → `ENOENT — no such file or directory` → `suggest --next`
+- 搜索弹窗的按键名 `esc`
+- 侧栏署名的 `hugo` 与 `rusty-poison`（是外链）
+
+**升级主题时注意**：这些覆盖是主题模板的整份拷贝，上游改动不会自动合并。
+升级后建议 `diff -r themes/rusty-poison/layouts layouts` 比对，
+或用下面的脚本重新生成覆盖（替换规则集中在一处）：见 `scripts/relocalize.py`。
+
+taxonomy 与 section 的标题不在模板里，而是由这些文件提供：
+
+```
+content/tags/_index.md     → title: "标签"
+content/series/_index.md   → title: "系列"
+content/posts/_index.md    → title: "文章"
+```
+
+## 已修复的主题 bug
+
+**中文 series 名会导致整个系列块消失**
+
+主题用 `GetPage (print "series/" (. | urlize))` 查系列页，但 `urlize` 会把中文
+转成百分号编码：
+
+```
+urlize "测试系列"  →  %E6%B5%8B%E8%AF%95%E7%B3%BB%E5%88%97
+taxonomy 实际 key  →  测试系列          ← 两者不匹配
+```
+
+`GetPage` 返回 nil，而 series 块外层是 `{{ if $series }}` 硬条件，于是
+「所属系列」和「第 X / Y 篇」**整块静默消失**（英文 series 名正常）。
+
+本站已在覆盖模板里去掉 `urlize`（5 处：`index.html`、`_default/list.html`、
+`post/info.html`、`post/series.html`、`post/breadcrumbs.html`），中英文 series 均已验证可用。
+
+> 中文 **tags** 不受影响：那里 `GetPage` 失败只会拿不到 `LinkTitle` 而优雅降级，
+> 标签页和链接都正常。
+

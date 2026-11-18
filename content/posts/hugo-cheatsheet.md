@@ -3,8 +3,7 @@ title: "Hugo 写作速查"
 date: 2026-11-16T10:00:00+08:00
 draft: false
 tags: ["Hugo", "Markdown"]
-summary: "自己常忘的 front matter 字段和命令，记在这里备查。"
-ShowToc: true
+description: "自己常忘的 front matter 字段和命令，记在这里备查。"
 ---
 
 ## 常用命令
@@ -27,7 +26,7 @@ lastmod: 2026-11-17T09:00:00+08:00   # 有修改时手动更新
 draft: false
 weight: 10                            # 同日期时排序，小的在前
 tags: ["Go", "Linux"]
-summary: "列表页显示的一句话摘要，不写则自动截取正文"
+description: "列表页显示的一句话摘要，不写则自动截取正文"
 cover:
   image: "/images/cover.png"          # 放 static/images/ 下
   alt: "封面图说明"

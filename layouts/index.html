@@ -1,0 +1,48 @@
+{{ define "main" }}
+<header class="home-hero">
+    <div class="prompt">$ cat ~/.welcome</div>
+    <h1>{{ .Site.Params.brand | default .Site.Title }}</h1>
+    {{ with .Site.Params.description }}<p>{{ . }}</p>{{ end }}
+</header>
+
+{{ $frontPageTypes := default (slice "posts") .Site.Params.front_page_content }}
+{{ $pages := where .Site.RegularPages "Type" "in" $frontPageTypes }}
+{{ $paginator := .Paginate $pages }}
+
+<ul class="timeline">
+    {{ range $paginator.Pages.GroupByDate "2006" }}
+        <li class="timeline-year">// {{ .Key }}</li>
+        {{ range .Pages }}
+            <li class="timeline-item">
+                <span class="date"><time datetime="{{ .Date.Format `2006-01-02` }}">{{ .Date.Format "01月02日" }}</time></span>
+                <a href="{{ .RelPermalink }}" class="title">
+                    {{ .Title }}{{ if .Params.project }} <span class="badge-project">项目</span>{{ end }}
+                    {{ with .Params.series }}
+                        {{ $seriesTerm := . }}
+                        {{ $seriesPage := $.Site.GetPage (print "series/" $seriesTerm) }}
+                        {{ $seriesLabel := $seriesTerm }}
+                        {{ with $seriesPage }}{{ $seriesLabel = .LinkTitle }}{{ end }}
+                        <span class="badge-series">{{ $seriesLabel }}</span>
+                    {{ end }}
+                </a>
+                {{ with (or .Description .Summary) }}
+                    <p class="summary">{{ . | plainify | truncate 160 }}</p>
+                {{ end }}
+                {{ with .Params.tags }}
+                <ul class="tags">
+                    {{ range . }}
+                        {{ $tagTerm := . }}
+                        {{ $tagPage := $.Site.GetPage (print "tags/" ($tagTerm | urlize)) }}
+                        {{ $tagLabel := $tagTerm }}
+                        {{ with $tagPage }}{{ $tagLabel = .LinkTitle }}{{ end }}
+                        <li><a class="tag" href="{{ "tags/" | absLangURL }}{{ $tagTerm | urlize }}">{{ $tagLabel }}</a></li>
+                    {{ end }}
+                </ul>
+                {{ end }}
+            </li>
+        {{ end }}
+    {{ end }}
+</ul>
+
+{{ partial "pagination.html" . }}
+{{ end }}

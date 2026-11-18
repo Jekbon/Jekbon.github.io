@@ -3,8 +3,7 @@ title: "Kubernetes 排障的固定套路"
 date: 2026-11-12T14:20:00+08:00
 draft: false
 tags: ["Kubernetes", "运维", "排障"]
-summary: "Pod 起不来时，按固定顺序看几处信息，大部分问题能在两分钟内定位。"
-ShowToc: true
+description: "Pod 起不来时，按固定顺序看几处信息，大部分问题能在两分钟内定位。"
 ---
 
 排查 Pod 异常，靠的是固定顺序，而不是碰运气地敲命令。

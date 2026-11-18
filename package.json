@@ -1,0 +1,10 @@
+{
+  "workspaces": [
+    "packages/hugoautogen"
+  ],
+  "scripts": {
+    "dev": "hugo server -D",
+    "build": "hugo --gc --minify --cleanDestinationDir && pagefind --site public",
+    "search": "pagefind --site public"
+  }
+}

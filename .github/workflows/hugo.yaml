@@ -10,7 +10,6 @@ permissions:
   pages: write
   id-token: write
 
-# 同一时间只跑一个部署；不取消进行中的任务，避免半成品上线
 concurrency:
   group: "pages"
   cancel-in-progress: false
@@ -23,49 +22,52 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      # 与本地 hugo version 保持一致，避免"本地能构建线上不能"
+      # 与本地保持一致，避免"本地能构建线上不能"
       HUGO_VERSION: 0.170.1
+      NODE_VERSION: '22'
     steps:
-      - name: Install Hugo CLI
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive   # 必须，否则 themes/rusty-poison 是空目录
+          fetch-depth: 0
+
+      - name: Install Hugo CLI (extended)
         run: |
           wget -O "${RUNNER_TEMP}/hugo.deb" \
             "https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_linux-amd64.deb"
           sudo dpkg -i "${RUNNER_TEMP}/hugo.deb"
           hugo version
 
-      - name: Checkout
-        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          submodules: recursive   # 必须，否则 themes/Papermod 是空目录
-          fetch-depth: 0
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      # 主题用 css.TailwindCSS 管道，需要 tailwindcss / pagefind 在 PATH 里。
+      # 它们装在 node_modules/.bin，只有经 npm script 调用时 npm 才会把该目录加进 PATH，
+      # 所以构建必须走 npm run build，直接跑 hugo 会报 tailwindcss not found。
+      - name: Install dependencies
+        run: npm ci
 
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v5
 
-      - name: Restore Hugo cache
-        id: cache-restore
-        uses: actions/cache/restore@v4
-        with:
-          path: ${{ runner.temp }}/hugo_cache
-          key: hugo-${{ github.run_id }}
-          restore-keys: hugo-
-
-      - name: Build with Hugo
+      - name: Build site + Pagefind index
         env:
-          HUGO_CACHEDIR: ${{ runner.temp }}/hugo_cache
           HUGO_ENVIRONMENT: production
+          HUGO_CACHEDIR: ${{ runner.temp }}/hugo_cache
+          # Hugo 会用 HUGO_BASEURL 覆盖配置里的 baseURL
+          HUGO_BASEURL: ${{ steps.pages.outputs.base_url }}/
           TZ: Asia/Shanghai
-        run: |
-          hugo --gc --minify --baseURL "${{ steps.pages.outputs.base_url }}/"
-          echo "--- 产物 ---"
-          ls -la public/ | head -20
+        run: npm run build
 
-      - name: Save Hugo cache
-        uses: actions/cache/save@v4
-        with:
-          path: ${{ runner.temp }}/hugo_cache
-          key: ${{ steps.cache-restore.outputs.cache-primary-key }}
+      - name: Show output
+        run: |
+          echo "--- public/ ---"; ls public | head -20
+          echo "--- pagefind 索引 ---"; ls public/pagefind 2>/dev/null | head -5
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4

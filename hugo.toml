@@ -1,107 +1,82 @@
 baseURL = "https://jekbon.github.io/"
 locale = "zh-CN"
+# 决定 <html lang> 与 Pagefind 的中文分词；不设会退化成 en，中文搜索直接失效
 defaultContentLanguage = "zh"
 title = "Jekbon's Blog"
-theme = "Papermod"
-
+theme = "rusty-poison"
+enableEmoji = true
 enableRobotsTXT = true
-enableGitInfo = false
-buildDrafts = false
-buildFuture = false
-buildExpired = false
+enableGitInfo = true          # 侧栏状态块的"版本"行需要它读取 git commit
 
 [pagination]
 pagerSize = 10
 
-# minify 会破坏 RSS/XML，故禁用 XML 压缩
+# minify 会压坏 RSS/XML
 [minify]
 disableXML = true
 
-# JSON 是 Papermod 站内搜索的索引来源
-[outputs]
-home = ["HTML", "RSS", "JSON"]
-
 [params]
-env = "production"
-title = "Jekbon's Blog"
-description = "DevOps、云原生与基础设施实践笔记"
-keywords = ["DevOps", "Kubernetes", "Linux", "Hugo"]
-author = "Jekbon"
-mainSections = ["posts"]     # 首页、归档、上下篇都按这个 section 取文章
-defaultTheme = "dark"        # 默认黑色背景；右上角按钮可临时切亮色
-disableThemeToggle = false
-ShowReadingTime = true
-ShowWordCount = true
-ShowShareButtons = false
-ShowPostNavLinks = true      # 上一篇/下一篇
-ShowBreadCrumbs = true
-ShowCodeCopyButtons = true
-ShowToc = true
-TocOpen = false
-ShowRssButtonInSectionTermList = true
-UseHugoToc = true
-disableSpecial1stPost = false
-comments = false
+  brand = "Jekbon's Blog"
+  description = "DevOps、云原生与基础设施实践笔记"
+  tagline = "// DevOps · Cloud Native"
+  favicon = "/favicon.png"
+  showDarkLight = true          # 顶栏明暗切换按钮
+  hideToc = false               # 默认显示右侧目录
 
-[params.label]
-text = "Jekbon's Blog"
+  front_page_content = ["posts"]  # 首页列出哪个 section（等同 Papermod 的 mainSections）
 
-[params.homeInfoParams]
-Title = "你好 👋"
-Content = """
-这里是 Jekbon 的技术博客，记录 DevOps、云原生与基础设施相关的实践与踩坑。
+  menu = [
+    {Name = "文章", URL = "/posts/", HasChildren = false},
+    {Name = "系列", URL = "/series/", HasChildren = false},
+    {Name = "标签", URL = "/tags/", HasChildren = false},
+  ]
 
-站点由 Hugo + Papermod 构建，源码托管在 GitHub，推送即自动发布。
-"""
+  github_url = "https://github.com/Jekbon"
+  rss_icon    = true
+  rss_section = "posts"
 
-[[params.socialIcons]]
-name = "github"
-url = "https://github.com/Jekbon"
+[taxonomies]
+  series = "series"
+  tags   = "tags"
 
-[[params.socialIcons]]
-name = "rss"
-url = "index.xml"
-
-[params.assets]
-disableHLJS = true           # 交给 Hugo 内置 chroma，避免两套高亮打架
-favicon = "/favicon.ico"
-favicon16x16 = "/favicon-16x16.png"
-favicon32x32 = "/favicon-32x32.png"
-apple_touch_icon = "/apple-touch-icon.png"
-safari_pinned_tab = "/favicon.svg"
-
-[params.fuseOpts]
-isCaseSensitive = false
-shouldSort = true
-location = 0
-distance = 1000
-threshold = 0.4
-minMatchCharLength = 0
-keys = ["title", "permalink", "summary", "content"]
+# 相关文章推荐权重
+[related]
+  threshold = 80
+  includeNewer = true
+  toLower = false
+  [[related.indices]]
+    name = "tags"
+    weight = 100
+  [[related.indices]]
+    name = "series"
+    weight = 80
+  [[related.indices]]
+    name = "date"
+    weight = 10
 
 [markup]
+  [markup.tableOfContents]
+    startLevel = 2
+    endLevel = 4
+    ordered = false
   [markup.highlight]
-    noClasses = false        # Papermod 靠 CSS class 上色，必须 false
     codeFences = true
-    guessSyntax = true
-    lineNos = false
-  [markup.goldmark.renderer]
-    unsafe = true            # 允许 Markdown 内嵌 HTML
+    noClasses = false          # 主题靠 CSS class 上色，必须 false
+    style = "monokai"
+    tabWidth = 2
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true            # 允许 Markdown 内嵌 HTML
+    [markup.goldmark.extensions]
+      [markup.goldmark.extensions.passthrough]
+        enable = true          # 数学公式透传给 KaTeX
+        [markup.goldmark.extensions.passthrough.delimiters]
+          block  = [['\[', '\]'], ['$$', '$$']]
+          inline = [['\(', '\)']]
 
-[[menu.main]]
-identifier = "archives"
-name = "归档"
-url = "/archives/"
-weight = 5
-
-[[menu.main]]
-identifier = "tags"
-name = "标签"
-url = "/tags/"
-weight = 10
-
-[[menu.main]]
-identifier = "search"
-name = "搜索"
-url = "/search/"
-weight = 15
+# 必需：Hugo 默认 exec 白名单没有 tailwindcss，不加这段首次构建直接
+# access denied: "tailwindcss" is not whitelisted in policy "security.exec.allow"
+# 注意 allow 会替换默认值，所以官方条目要一并写上；且 [security] 不从主题合并
+[security]
+  [security.exec]
+    allow = ['^(dart-)?sass$', '^go$', '^git$', '^node$', '^postcss$', '^tailwindcss$']

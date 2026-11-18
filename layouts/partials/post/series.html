@@ -1,0 +1,21 @@
+{{ with .Params.series }}
+    {{ $seriesURL := print "series/" . }}
+    {{ $series := $.Site.GetPage $seriesURL }}
+    {{ if $series }}
+    <section class="series-section" aria-labelledby="series-heading">
+        <h2 id="series-heading">// 所属系列：<a href="{{ $series.Permalink }}">{{ $series.LinkTitle }}</a></h2>
+        <ul class="series-list">
+            {{ range $series.Pages }}
+                <li class="{{ if eq .Permalink $.Permalink }}current{{ end }}">
+                    <span class="date">{{ .Date.Format "2006年01月02日" }}</span>
+                    {{ if eq .Permalink $.Permalink }}
+                        <span>{{ .Title }}</span>
+                    {{ else }}
+                        <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+                    {{ end }}
+                </li>
+            {{ end }}
+        </ul>
+    </section>
+    {{ end }}
+{{ end }}

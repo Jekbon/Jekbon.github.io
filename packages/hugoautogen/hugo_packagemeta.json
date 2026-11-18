@@ -1,0 +1,13 @@
+{
+  "sum": "f60c2d10e0927b0b",
+  "dependencySources": {
+    "dependencies": {},
+    "devDependencies": {
+      "@tailwindcss/cli": "rusty-poison",
+      "mermaid": "rusty-poison",
+      "pagefind": "rusty-poison",
+      "svg-pan-zoom": "rusty-poison",
+      "tailwindcss": "rusty-poison"
+    }
+  }
+}

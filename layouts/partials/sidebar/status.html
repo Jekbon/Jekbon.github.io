@@ -1,0 +1,8 @@
+<div class="panel-status" aria-label="站点状态">
+    <div><span class="dot" aria-hidden="true"></span> 在线</div>
+    <div>构建于 {{ now.Format "2006-01-02 15:04 MST" }}</div>
+    {{- $rev := hugo.CommitHash -}}
+    {{- if not $rev }}{{ with .GitInfo }}{{ $rev = .Hash }}{{ end }}{{ end -}}
+    {{- with $rev }}<div>版本 {{ $rev | truncate 7 "" }}</div>{{ end }}
+    {{ with hugo.Version }}<div>hugo {{ . }}</div>{{ end }}
+</div>

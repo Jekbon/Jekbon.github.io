@@ -1,0 +1,18 @@
+{{ partial "head/head.html" . }}
+<body>
+    <a href="#content" class="skip-link">跳到正文</a>
+    <div class="wrapper">
+        {{ partial "sidebar/sidebar.html" . }}
+        <div class="main-column">
+            {{ partial "header/topbar.html" . }}
+            <div class="article-row">
+                <main id="content" class="container">
+                    {{ block "main" . -}}{{- end }}
+                </main>
+                {{ block "toc" . }}{{ end }}
+            </div>
+        </div>
+    </div>
+    {{ partial "search/modal.html" . }}
+</body>
+</html>
