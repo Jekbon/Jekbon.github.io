@@ -155,7 +155,7 @@ journalctl -b > /tmp/journalctl_boot.txt
 > **XID 版本敏感性说明**：不同驱动分支引入的 XID 编号不同。下表中 XID 92/94/95 自较新驱动分支（R418/R465+）引入；XID 119/120 为 GSP 相关，自 R515+ 引入。XID 79 的 AER 伴随日志在较新内核（5.x+）和驱动分支（R535+）中信息更完整。精确的引入版本以 [NVIDIA XID Errors 官方文档](https://docs.nvidia.com/deploy/xid-errors/index.html) 为准。
 
 | XID | 官方含义 | 引入/可见版本 | 常见触发原因 | 是否硬件故障 | 处置步骤 |
-|---|---|---|---|---|
+|---|---|---|---|---|---|
 | **7** | Invalid or corrupted push buffer stream | 全版本 | CUDA kernel 推送了无效的 command buffer；驱动 bug | 否（通常 SW） | 1. 升级驱动 2. 检查 CUDA 代码是否有越界 3. 复现则报 NVIDIA bug |
 | **13** | Graphics Engine exception | 全版本 | GPU 图形引擎异常，通常是 kernel 执行超时 | 否（通常 SW） | 1. 检查是否有 GPU kernel 死循环 2. 增加 timeout 3. 升级驱动 |
 | **31** | GPU memory page fault | 全版本 | GPU 访问了未映射的虚拟地址 | 否（通常 SW） | 1. 检查代码是否有野指针/OOB 2. 增大显存分配 3. 检查 MIG 配置 |

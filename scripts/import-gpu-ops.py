@@ -132,6 +132,37 @@ def guess_lang(body: str) -> str:
     return 'text'
 
 
+# ---- Markdown 表格修复 ----
+# GFM 要求分隔行列数 == 表头列数，否则整张表退化成段落
+# （退化后 smart typography 还会把 --- 变成 —，看起来更糟）。
+# 源文档有多张表分隔行少写一列。注意字符类里 - 必须放最后，
+# 写成 [\s:-|] 会被解析成 ASCII 范围 58-124，反而不含连字符。
+DELIM_ROW = re.compile(r'^\|[\s:|-]+\|$')
+
+
+def fix_table_delimiters(text: str):
+    """把分隔行列数重写成与表头一致。代码块内的 | 行不动。"""
+    lines = text.split('\n')
+    in_code = False
+    fixed = 0
+    for i, l in enumerate(lines):
+        if l.startswith('```'):
+            in_code = not in_code
+            continue
+        if in_code:
+            continue
+        if l.strip().startswith('|') and i + 1 < len(lines):
+            nxt = lines[i + 1].strip()
+            if DELIM_ROW.match(nxt) and '-' in nxt:
+                h = l.strip()
+                ncols = h.count('|') - 1 if h.endswith('|') else h.count('|')
+                if ncols > 0 and nxt.count('|') - 1 != ncols:
+                    # 注意是 '|' + '---|' * n，写成 '|---|' * n 会拼出双竖线空单元格
+                    lines[i + 1] = '|' + '---|' * ncols
+                    fixed += 1
+    return '\n'.join(lines), fixed
+
+
 def annotate_code_blocks(text: str) -> str:
     """给无语言标识的围栏补一个保守的语言标记。
 
@@ -192,8 +223,11 @@ def main():
             s = s.replace(old, new)
         s = SERIES_QUOTE.sub('', s)
         s = NUMBERED_H1.sub('', s)
+        s, nfix = fix_table_delimiters(s)
         s = annotate_code_blocks(s)
         s = s.lstrip('\n')
+        if nfix:
+            print(f'    · 修正 {nfix} 张表的分隔行列数')
 
         # 校验脱敏与清理彻底
         for bad in ('aicoda', '10.240.', '本分册属于', '../GPU集群'):
