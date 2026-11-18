@@ -43,6 +43,23 @@ hugo --minify          # 确认没有新告警
 git add -A && git commit -m "chore: bump Papermod" && git push
 ```
 
+## 配色
+
+默认**纯黑背景**。覆盖层在 `assets/css/extended/dark.css`（Papermod 会把
+`assets/css/extended/*.css` 合并到主题样式**之后**，同特异性靠后胜出，所以能覆盖）：
+
+| 想怎么改 | 做法 |
+|---|---|
+| 调回官方深灰 `rgb(29,30,32)` | 删掉 `dark.css` 这一个文件，其他不动 |
+| 微调黑度 | 只改 `--theme` 一行；`rgb(0,0,0)` 最黑，`rgb(18,18,20)` 稍柔和 |
+| 改正文颜色 | `--content`（正文）、`--primary`（标题） |
+
+正文刻意用 `rgb(197,199,204)` 而不是纯白——纯黑配纯白对比过强，长时间阅读会光晕刺眼。
+
+右上角按钮可临时切亮色，选择存在浏览器 `localStorage` 的 `pref-theme` 键里。
+如果哪次打开发现变白了，多半是之前点过切换，控制台执行
+`localStorage.removeItem("pref-theme")` 再刷新即可。
+
 ## 踩过的坑
 
 **1. 文章「消失」——日期写成了未来时间**

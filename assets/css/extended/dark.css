@@ -1,0 +1,56 @@
+/* ==========================================================================
+   纯黑暗色主题覆盖
+   Papermod 默认暗色是 rgb(29,30,32) 的深灰，这里整体压到纯黑系。
+   · 想调回官方深灰：删掉本文件即可，其他配置不用动
+   · 想微调黑度：只改 --theme 一行（rgb(0,0,0) 最黑，rgb(18,18,20) 稍柔和）
+   ========================================================================== */
+
+:root[data-theme="dark"] {
+  --theme: rgb(0, 0, 0);            /* 页面背景：纯黑 */
+  --entry: rgb(18, 18, 20);         /* 卡片、代码块底：比背景亮一档，做出层次 */
+  --primary: rgb(228, 228, 231);    /* 标题：刻意不用纯白，纯黑配纯白会光晕刺眼 */
+  --secondary: rgb(148, 150, 156);  /* 日期、字数、标签等次要信息 */
+  --tertiary: rgb(60, 61, 66);      /* 分隔线、弱边框 */
+  --content: rgb(197, 199, 204);    /* 正文 */
+  --code-block-bg: rgb(13, 13, 15); /* 围栏代码块背景 */
+  --code-bg: rgb(28, 28, 32);       /* 行内 `code` 背景 */
+  --border: rgb(40, 40, 45);
+  color-scheme: dark;
+}
+
+/* 列表页背景跟随 --theme（Papermod 原本就这么做，这里显式兜底） */
+[data-theme="dark"] .list {
+  background: var(--theme);
+}
+
+/* 顶栏与页脚在纯黑下用极淡的分隔线，避免"糊成一片" */
+[data-theme="dark"] .nav {
+  border-color: var(--border);
+}
+
+/* 表格边框在纯黑下需要更明显一点，否则看不出列 */
+[data-theme="dark"] .post-content table th,
+[data-theme="dark"] .post-content table td {
+  border-color: var(--border);
+}
+
+/* 引用块左边线提亮，纯黑下原本的深色边线几乎看不见 */
+[data-theme="dark"] .post-content blockquote {
+  border-left-color: rgb(90, 92, 100);
+}
+
+/* 滚动条配色（WebKit），纯黑页面上默认滚动条会很突兀 */
+[data-theme="dark"] ::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+[data-theme="dark"] ::-webkit-scrollbar-track {
+  background: rgb(0, 0, 0);
+}
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background: rgb(52, 53, 58);
+  border-radius: 6px;
+}
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+  background: rgb(78, 80, 86);
+}
