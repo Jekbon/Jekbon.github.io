@@ -175,6 +175,27 @@ git submodule sync --recursive
 
 `[minify] disableXML = true` 别删，否则 `/index.xml` 会坏掉。
 
+**7. 本机有两个 node，brew 那个的 CA 库是坏的**
+
+```
+/Users/wangbin/.local/bin/node   v22.23.2   TLS 正常  ← 用这个
+/opt/homebrew/bin/node           v23.11.0   对任何 HTTPS 站点都报
+                                            UNABLE_TO_GET_ISSUER_CERT_LOCALLY
+```
+
+如果 `export PATH="/opt/homebrew/bin:$PATH"` 走在前面，`npm install` 会失败，
+但错误信息指向 registry 证书，容易误判成镜像问题（实际 `curl` 访问同一个
+registry 完全正常，因为 curl 走 macOS 钥匙串，node 走自己的 CA bundle）。
+
+正确顺序——让 `~/.local/bin` 在前，同时保留 brew 的 hugo：
+
+```bash
+export PATH="$PWD/node_modules/.bin:$HOME/.local/bin:/opt/homebrew/bin:$PATH"
+```
+
+前面加 `node_modules/.bin` 是为了能直接跑 `hugo`（Tailwind 需要 `tailwindcss` 在 PATH）。
+CI 用 `actions/setup-node` 装 Node 22，不受此影响。
+
 ## 中文化
 
 主题**没有 i18n**（无 `i18n/` 目录，多语言支持的 PR #7 还没合并），界面文字全是硬编码英文。
