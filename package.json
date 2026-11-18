@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "hugo server -D",
     "build": "hugo --gc --minify --cleanDestinationDir && pagefind --site public",
-    "search": "pagefind --site public"
+    "search": "pagefind --site public",
+    "preview": "hugo --gc --minify --cleanDestinationDir --baseURL http://127.0.0.1:1313/ && pagefind --site public && python3 -m http.server 1313 --bind 127.0.0.1 -d public"
   }
 }

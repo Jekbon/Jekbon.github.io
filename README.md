@@ -196,6 +196,34 @@ export PATH="$PWD/node_modules/.bin:$HOME/.local/bin:/opt/homebrew/bin:$PATH"
 前面加 `node_modules/.bin` 是为了能直接跑 `hugo`（Tailwind 需要 `tailwindcss` 在 PATH）。
 CI 用 `actions/setup-node` 装 Node 22，不受此影响。
 
+**8. 本地直接 `npm run build` 后开静态服务器会白屏——`<base href>` 指向线上域**
+
+主题在 `partials/head/meta.html:54` 输出了 `<base href="{{ .Permalink }}">`。
+于是所有 root-relative 资源（`/css/...`、`/js/...`）都会拼到 base 的 origin 上。
+如果你用默认的 `baseURL = "https://jekbon.github.io/"` 构建再在 localhost 打开，
+浏览器会去请求**线上域名**的资源——站点没上线时 404，上线后则因跨域被 CORS 拦截，
+整页变成无样式裸 HTML。
+
+本地预览必须用本地 baseURL，一条命令搞定（含 Pagefind 索引和静态服务）：
+
+```bash
+npm run preview        # http://127.0.0.1:1313，等同线上的生产构建
+```
+
+CI 不受影响：workflow 里用 `--baseURL "${{ steps.pages.outputs.base_url }}/"`，
+base 的 origin 与真实域一致。
+
+**9. 主题自带的 JetBrains Mono 字体文件是坏的**
+
+`themes/rusty-poison/static/fonts/JetBrainsMono-*.woff2` 的文件头是四个换行符
+而不是 `wOF2`（git 仓库里就这样，非传输损坏），浏览器报
+`OTS parsing error: invalid sfntVersion`。Inter 的两个文件是正常的。
+
+已在站点 `static/fonts/` 放了一份正确的 variable 字体覆盖它
+（Hugo 的站点 static 优先于主题 static），来源
+`@fontsource-variable/jetbrains-mono@5.2.8`，许可证一并保留。
+主题升级后若上游修好了，可以删掉本站这两份覆盖。
+
 ## 中文化
 
 主题**没有 i18n**（无 `i18n/` 目录，多语言支持的 PR #7 还没合并），界面文字全是硬编码英文。
