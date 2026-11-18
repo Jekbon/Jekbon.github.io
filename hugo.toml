@@ -1,0 +1,107 @@
+baseURL = "https://jekbon.github.io/"
+locale = "zh-CN"
+defaultContentLanguage = "zh"
+title = "Jekbon's Blog"
+theme = "Papermod"
+
+enableRobotsTXT = true
+enableGitInfo = false
+buildDrafts = false
+buildFuture = false
+buildExpired = false
+
+[pagination]
+pagerSize = 10
+
+# minify 会破坏 RSS/XML，故禁用 XML 压缩
+[minify]
+disableXML = true
+
+# JSON 是 Papermod 站内搜索的索引来源
+[outputs]
+home = ["HTML", "RSS", "JSON"]
+
+[params]
+env = "production"
+title = "Jekbon's Blog"
+description = "DevOps、云原生与基础设施实践笔记"
+keywords = ["DevOps", "Kubernetes", "Linux", "Hugo"]
+author = "Jekbon"
+mainSections = ["posts"]     # 首页、归档、上下篇都按这个 section 取文章
+defaultTheme = "auto"        # 跟随系统明暗
+disableThemeToggle = false
+ShowReadingTime = true
+ShowWordCount = true
+ShowShareButtons = false
+ShowPostNavLinks = true      # 上一篇/下一篇
+ShowBreadCrumbs = true
+ShowCodeCopyButtons = true
+ShowToc = true
+TocOpen = false
+ShowRssButtonInSectionTermList = true
+UseHugoToc = true
+disableSpecial1stPost = false
+comments = false
+
+[params.label]
+text = "Jekbon's Blog"
+
+[params.homeInfoParams]
+Title = "你好 👋"
+Content = """
+这里是 Jekbon 的技术博客，记录 DevOps、云原生与基础设施相关的实践与踩坑。
+
+站点由 Hugo + Papermod 构建，源码托管在 GitHub，推送即自动发布。
+"""
+
+[[params.socialIcons]]
+name = "github"
+url = "https://github.com/Jekbon"
+
+[[params.socialIcons]]
+name = "rss"
+url = "index.xml"
+
+[params.assets]
+disableHLJS = true           # 交给 Hugo 内置 chroma，避免两套高亮打架
+favicon = "/favicon.ico"
+favicon16x16 = "/favicon-16x16.png"
+favicon32x32 = "/favicon-32x32.png"
+apple_touch_icon = "/apple-touch-icon.png"
+safari_pinned_tab = "/favicon.svg"
+
+[params.fuseOpts]
+isCaseSensitive = false
+shouldSort = true
+location = 0
+distance = 1000
+threshold = 0.4
+minMatchCharLength = 0
+keys = ["title", "permalink", "summary", "content"]
+
+[markup]
+  [markup.highlight]
+    noClasses = false        # Papermod 靠 CSS class 上色，必须 false
+    codeFences = true
+    guessSyntax = true
+    lineNos = false
+  [markup.goldmark.renderer]
+    unsafe = true            # 允许 Markdown 内嵌 HTML
+
+[[menu.main]]
+identifier = "archives"
+name = "归档"
+url = "/archives/"
+weight = 5
+
+[[menu.main]]
+identifier = "tags"
+name = "标签"
+url = "/tags/"
+weight = 10
+
+[[menu.main]]
+identifier = "search"
+name = "搜索"
+url = "/search/"
+weight = 15
