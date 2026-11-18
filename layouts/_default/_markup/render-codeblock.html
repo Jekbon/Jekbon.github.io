@@ -1,0 +1,21 @@
+{{- /* 长代码块默认折叠，加快正文扫读；短代码块保持原样不变。
+       阈值由 params.codeCollapseLines 控制（默认 12 行）。
+       mermaid 有专属的 render-codeblock-mermaid.html，Hugo 优先匹配带后缀的
+       hook，所以图表不受这里影响。
+       折叠用原生 <details>：服务端渲染、无 JS 依赖、无首屏闪烁。 */ -}}
+{{- $content := trim .Inner "\n" -}}
+{{- $lines := len (split $content "\n") -}}
+{{- $limit := site.Params.codeCollapseLines | default 12 -}}
+{{- $hl := transform.Highlight .Inner (.Type | default "text") .Options -}}
+{{- if gt $lines $limit -}}
+<details class="code-collapse">
+  <summary class="code-collapse__summary">
+    <span class="code-collapse__caret" aria-hidden="true"></span>
+    <span class="code-collapse__lang">{{ .Type | default "text" }}</span>
+    <span class="code-collapse__meta">{{ $lines }} 行 · 已折叠，点击展开</span>
+  </summary>
+  <div class="code-collapse__body">{{ $hl }}</div>
+</details>
+{{- else -}}
+{{ $hl }}
+{{- end -}}

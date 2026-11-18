@@ -21,7 +21,8 @@ disableXML = true
   tagline = "// DevOps · Cloud Native"
   favicon = "/favicon.png"
   showDarkLight = true          # 顶栏明暗切换按钮
-  hideToc = false               # 默认显示右侧目录
+  hideToc = false
+  codeCollapseLines = 12   # 超过此行数的代码块默认折叠；改大=更少折叠，0/删掉=不折叠               # 默认显示右侧目录
 
   front_page_content = ["posts"]  # 首页列出哪个 section（等同 Papermod 的 mainSections）
 

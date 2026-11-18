@@ -1,0 +1,58 @@
+/* 长代码块折叠容器。变量沿用主题运行时 token（--bg-soft / --border /
+   --fg-muted / --fg-subtle / --color-accent / --font-mono），明暗两套自动跟随。 */
+
+.code-collapse {
+  margin: 1.4rem 0;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg-raised);
+  overflow: hidden;
+}
+
+.code-collapse__summary {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.5rem 0.85rem;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--fg-muted);
+  background: var(--bg-soft);
+}
+.code-collapse__summary::-webkit-details-marker { display: none; }
+.code-collapse__summary::marker { content: ""; }
+.code-collapse__summary:hover { color: var(--fg); }
+
+.code-collapse__caret {
+  width: 0;
+  height: 0;
+  border-left: 5px solid currentColor;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  transition: transform 0.15s ease;
+  flex: none;
+}
+.code-collapse[open] > .code-collapse__summary .code-collapse__caret {
+  transform: rotate(90deg);
+}
+
+.code-collapse__lang { color: var(--color-accent); font-weight: 600; }
+.code-collapse__meta { color: var(--fg-subtle); }
+
+.code-collapse[open] > .code-collapse__summary {
+  border-bottom: 1px solid var(--border);
+}
+
+/* 折叠容器内的代码块去掉自身外边距与圆角，避免双层边框 */
+.code-collapse__body .highlight,
+.code-collapse__body .codeblock {
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+}
+.code-collapse__body pre {
+  border-radius: 0;
+}

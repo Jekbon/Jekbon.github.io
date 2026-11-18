@@ -70,6 +70,19 @@ gh run list --limit 5
 gh run watch
 ```
 
+## 代码块折叠
+
+超过 `codeCollapseLines`（`hugo.toml`，默认 **12**）行的代码块默认折叠成一条
+`▸ 语言 · N 行 · 已折叠，点击展开`，点开才渲染内容；短代码块保持原样
+（含主题自带的语言标签、wrap、copy 按钮）。目的是让长文扫读时不被大段代码打断。
+
+实现是站点级 render hook `layouts/_default/_markup/render-codeblock.html` +
+`assets/css/code-collapse.css`（经覆盖的 `head/stylesheets.html` 引入），
+用原生 `<details>`：服务端渲染、无 JS、无首屏闪烁、明暗主题自动跟随。
+mermaid 有主题专属 hook，优先匹配，不受影响。
+
+调阈值改 `hugo.toml` 的 `codeCollapseLines`；设成极大值等于关闭折叠。
+
 ## Markdown 增强
 
 **GitHub 风格提示块**（主题原生支持）：
