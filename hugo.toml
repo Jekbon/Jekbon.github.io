@@ -30,6 +30,8 @@ disableXML = true
     {Name = "文章", URL = "/posts/", HasChildren = false},
     {Name = "系列", URL = "/series/", HasChildren = false},
     {Name = "标签", URL = "/tags/", HasChildren = false},
+    {Name = "项目", URL = "/projects/", HasChildren = false},
+    {Name = "关于", URL = "/about/", HasChildren = false},
   ]
 
   github_url = "https://github.com/Jekbon"
