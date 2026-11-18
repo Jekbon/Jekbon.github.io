@@ -140,6 +140,75 @@ def guess_lang(body: str) -> str:
 DELIM_ROW = re.compile(r'^\|[\s:|-]+\|$')
 
 
+def reattach_orphan_table_rows(text: str):
+    """把被引用块打断的表格行移回表格末尾。
+
+    Markdown 表格被空行或引用块打断后无法延续。源文档 08 篇 1.1 节的
+    「层级/入口命令/日志源」表写到硬件层后插了一段「版本说明」引用块，
+    网络层/存储层两行落在引用块之后，既无表头也无分隔行，沦为孤儿段落。
+    规则：引用块后紧跟的 | 行块若没有分隔行跟随（即不是完整表格），
+    且引用块前刚结束一张表，则把这些行接回那张表末尾，引用块留在表后。
+    """
+    lines = text.split('\n')
+    out, i, n = [], 0, len(lines)
+    in_code = False
+    moved = 0
+    while i < n:
+        l = lines[i]
+        if l.startswith('```'):
+            in_code = not in_code
+            out.append(l)
+            i += 1
+            continue
+        if not in_code and l.strip().startswith('>'):
+            quote, j = [l], i + 1
+            while j < n and lines[j].strip().startswith('>'):
+                quote.append(lines[j])
+                j += 1
+            orphan, k = [], j
+            while k < n and lines[k].strip().startswith('|'):
+                orphan.append(lines[k])
+                k += 1
+            has_delim = k < n and DELIM_ROW.match(lines[k].strip())
+            if orphan and not has_delim:
+                idx = len(out) - 1
+                while idx >= 0 and not out[idx].strip():
+                    idx -= 1                     # 跳过表与引用块之间的空行
+                if idx >= 0 and out[idx].strip().startswith('|'):
+                    out[idx + 1:idx + 1] = orphan   # 接回表格末尾
+                    moved += len(orphan)
+                    out.extend(quote)
+                    i = k
+                    continue
+            out.extend(quote)
+            i = j
+            continue
+        out.append(l)
+        i += 1
+    return '\n'.join(out), moved
+
+
+def separate_quote_and_table(text: str):
+    """引用块后紧跟表格行时插入空行。
+
+    Markdown 的 lazy continuation 会把引用块后第一个非空、非 > 的行
+    吸收进引用块本身，表格因此整张消失（行变成引用里的纯文本）。
+    源文档 08 篇「版本说明」引用块后直接跟了一张表，中招。
+    """
+    lines = text.split('\n')
+    out = []
+    in_code = False
+    for i, l in enumerate(lines):
+        if l.startswith('```'):
+            in_code = not in_code
+        out.append(l)
+        if (not in_code and l.strip().startswith('>')
+                and i + 1 < len(lines)
+                and lines[i + 1].strip().startswith('|')):
+            out.append('')
+    return '\n'.join(out)
+
+
 def fix_table_delimiters(text: str):
     """把分隔行列数重写成与表头一致。代码块内的 | 行不动。"""
     lines = text.split('\n')
@@ -223,9 +292,13 @@ def main():
             s = s.replace(old, new)
         s = SERIES_QUOTE.sub('', s)
         s = NUMBERED_H1.sub('', s)
+        s, nmoved = reattach_orphan_table_rows(s)
+        s = separate_quote_and_table(s)
         s, nfix = fix_table_delimiters(s)
         s = annotate_code_blocks(s)
         s = s.lstrip('\n')
+        if nmoved:
+            print(f'    · 接回 {nmoved} 行被引用块打断的表格行')
         if nfix:
             print(f'    · 修正 {nfix} 张表的分隔行列数')
 

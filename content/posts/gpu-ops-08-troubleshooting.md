@@ -69,10 +69,10 @@ series: "GPU 集群运维"
 | 容器/K8s | `kubectl describe pod`；`kubectl logs`；`kubectl get events` | kubelet 日志、containerd 日志 |
 | 驱动层 | `nvidia-smi -q`；`dmesg -T \| grep NVRM` | nvidia-bug-report.sh 输出 |
 | 硬件层 | `nvidia-smi -q -d ECC,TEMPERATURE,PERFORMANCE`；`ipmitool sel list` | BMC/IPMI 日志、dmesg AER |
-
-> **版本说明**：`nvidia-smi -q` 的输出字段随驱动分支变化——R550+ 增加了 GSP 固件版本、SRAM/DRAM 分项 ECC 等字段。`nvidia-bug-report.sh` 输出内容随驱动版本扩展（R550+ 含 NVLink 4/5 详情与 GSP 日志）。`ipmitool sel elist`（扩展列表含时间戳）需 ipmitool 1.8.18+。`dmesg -T` 人类可读时间戳依赖 kernel 5.x+ systemd。
 | 网络层 | `ibstat`；`ibdiagnet`；`perfquery` | 交换机管理口日志、OpenSM 日志 |
 | 存储层 | `iostat -x 1`；`df -h`；`mount \| grep lustre/gpfs` | 存储集群监控（Ceph/Lustre/GPFS） |
+
+> **版本说明**：`nvidia-smi -q` 的输出字段随驱动分支变化——R550+ 增加了 GSP 固件版本、SRAM/DRAM 分项 ECC 等字段。`nvidia-bug-report.sh` 输出内容随驱动版本扩展（R550+ 含 NVLink 4/5 详情与 GSP 日志）。`ipmitool sel elist`（扩展列表含时间戳）需 ipmitool 1.8.18+。`dmesg -T` 人类可读时间戳依赖 kernel 5.x+ systemd。
 
 ### 1.2 核心排查原则
 
