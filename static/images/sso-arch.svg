@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 470" role="img" aria-label="单机部署架构：Jenkins 与 Nexus 经 LDAP 接 Authentik Outpost，Authentik 与 Nexus 共享一个 PostgreSQL 实例">
+  <defs>
+    <marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8a8a8a"/>
+    </marker>
+    <style>
+      text { font-family: Inter, -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; fill: #e6e6e6; }
+      .t  { font-size: 15px; }
+      .ts { font-size: 12.5px; fill: #a4a4a4; }
+      .ttl{ font-size: 15px; font-weight: 600; fill: #e25822; }
+      .box  { fill: #1c1d20; stroke: #e25822; stroke-width: 1.4; rx: 6; }
+      .zone { fill: none; stroke: #4a4b50; stroke-width: 1.2; stroke-dasharray: 6 4; rx: 10; }
+      .ln   { stroke: #8a8a8a; stroke-width: 1.4; fill: none; }
+    </style>
+  </defs>
+
+  <rect x="0" y="0" width="960" height="470" rx="12" fill="#16171a"/>
+  <rect class="zone" x="15" y="15" width="930" height="440"/>
+  <text class="ts" x="32" y="40">单机 Ubuntu 22.04 / 4 核 / 7.7G RAM / 787G 数据盘</text>
+
+  <!-- 消费方 -->
+  <rect class="box" x="35" y="95" width="180" height="60"/>
+  <text class="t" x="125" y="120" text-anchor="middle">Jenkins 2.535</text>
+  <text class="ts" x="125" y="140" text-anchor="middle">:80 / :50000</text>
+
+  <rect class="box" x="35" y="285" width="180" height="60"/>
+  <text class="t" x="125" y="310" text-anchor="middle">Nexus 3.93</text>
+  <text class="ts" x="125" y="330" text-anchor="middle">:8081 / :8082 / :8083</text>
+
+  <!-- Authentik 区 -->
+  <rect class="zone" x="285" y="60" width="430" height="330"/>
+  <text class="ttl" x="500" y="86" text-anchor="middle">Authentik（统一认证）</text>
+
+  <rect class="box" x="315" y="180" width="170" height="60"/>
+  <text class="t" x="400" y="205" text-anchor="middle">LDAP Outpost</text>
+  <text class="ts" x="400" y="225" text-anchor="middle">:3389 / :6636</text>
+
+  <rect class="box" x="530" y="105" width="160" height="56"/>
+  <text class="t" x="610" y="128" text-anchor="middle">Server</text>
+  <text class="ts" x="610" y="147" text-anchor="middle">:9000 / :9443</text>
+
+  <rect class="box" x="530" y="200" width="160" height="48"/>
+  <text class="t" x="610" y="229" text-anchor="middle">Worker（后台任务）</text>
+
+  <rect class="box" x="530" y="288" width="160" height="48"/>
+  <text class="t" x="610" y="317" text-anchor="middle">Redis :6379</text>
+
+  <!-- PostgreSQL 圆柱 -->
+  <path d="M770,180 v78 a80,15 0 0 0 160,0 v-78" fill="#1c1d20" stroke="#e25822" stroke-width="1.4"/>
+  <ellipse cx="850" cy="180" rx="80" ry="15" fill="#1c1d20" stroke="#e25822" stroke-width="1.4"/>
+  <text class="t" x="850" y="215" text-anchor="middle">PostgreSQL 16</text>
+  <text class="ts" x="850" y="234" text-anchor="middle">:5432 仅本机</text>
+  <text class="ts" x="850" y="251" text-anchor="middle">nexus 库 + authentik 库</text>
+
+  <!-- 连线 -->
+  <path class="ln" d="M215,125 L315,195" marker-end="url(#ar2)"/>
+  <text class="ts" x="252" y="148">LDAP</text>
+  <path class="ln" d="M215,315 L315,225" marker-end="url(#ar2)"/>
+  <text class="ts" x="252" y="282">LDAP</text>
+  <path class="ln" d="M485,200 L530,140" marker-end="url(#ar2)"/>
+  <path class="ln" d="M610,161 L610,200"/>
+  <path class="ln" d="M610,248 L610,288"/>
+  <path class="ln" d="M690,133 L770,195" marker-end="url(#ar2)"/>
+  <path class="ln" d="M690,224 L770,224" marker-end="url(#ar2)"/>
+  <path class="ln" d="M125,345 L125,430 L850,430 L850,272" marker-end="url(#ar2)"/>
+</svg>

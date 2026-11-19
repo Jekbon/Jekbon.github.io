@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 460" role="img" aria-label="GPU 集群排障六层模型：从作业层到存储层，自顶向下定位">
+  <style>
+    text { font-family: Inter, -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; fill: #e6e6e6; }
+    .t  { font-size: 15px; font-weight: 600; fill: #e25822; }
+    .ts { font-size: 13.5px; fill: #c9c9cd; }
+    .box { fill: #1c1d20; stroke: #e25822; stroke-width: 1.4; rx: 6; }
+  </style>
+  <rect x="0" y="0" width="960" height="460" rx="12" fill="#16171a"/>
+
+  <rect class="box" x="60" y="30"  width="840" height="56"/>
+  <text class="t"  x="90" y="64">第 6 层 · 作业层</text>
+  <text class="ts" x="300" y="64">训练代码 / 框架 / 超参数</text>
+  <rect class="box" x="60" y="100" width="840" height="56"/>
+  <text class="t"  x="90" y="134">第 5 层 · 容器/K8s</text>
+  <text class="ts" x="300" y="134">Pod / Device Plugin / 资源配额</text>
+  <rect class="box" x="60" y="170" width="840" height="56"/>
+  <text class="t"  x="90" y="204">第 4 层 · 驱动层</text>
+  <text class="ts" x="300" y="204">NVIDIA Driver / CUDA Runtime / NCCL</text>
+  <rect class="box" x="60" y="240" width="840" height="56"/>
+  <text class="t"  x="90" y="274">第 3 层 · 硬件层</text>
+  <text class="ts" x="300" y="274">GPU 本体 / NVLink / PCIe / 供电 / 散热</text>
+  <rect class="box" x="60" y="310" width="840" height="56"/>
+  <text class="t"  x="90" y="344">第 2 层 · 网络层</text>
+  <text class="ts" x="300" y="344">IB/RoCE / 交换机 / 光模块 / MTU / PFC</text>
+  <rect class="box" x="60" y="380" width="840" height="56"/>
+  <text class="t"  x="90" y="414">第 1 层 · 存储层</text>
+  <text class="ts" x="300" y="414">并行文件系统 / NVMe / 网络存储</text>
+</svg>

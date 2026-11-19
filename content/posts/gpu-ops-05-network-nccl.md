@@ -752,45 +752,28 @@ echo "===== Monitor completed after $iteration iterations ====="
 
 RoCE v2 在以太网上实现 RDMA，依赖三个机制协同工作保证零丢包：
 
+![RoCE 无损网络三要素：两端 HCA 跑 DCQCN，交换机做 ECN 标记与 PFC 反压](/images/gpu-05-roce-lossless.svg)
+**三者关系**：
+
+1. **PFC（Priority Flow Control）= 链路层反压**：接收端 buffer 即将满时发 PAUSE 帧给上游；
+   按优先级（0-7）独立控制，只暂停对应优先级；作用范围逐跳（hop-by-hop）
+2. **ECN（Explicit Congestion Notification）= 拥塞通知**：交换机检测队列拥塞（超阈值）
+   在 IP 头标记 CE bit；接收端收到 CE 标记的包后发 CNP（Congestion Notification Packet）
+   给发送端；作用范围端到端
+3. **DCQCN = NVIDIA/Mellanox 的拥塞控制算法**：发送端收到 CNP 后降速，无 CNP 时逐步恢复；
+   类似 TCP 的 AIMD，但专为 RDMA 设计
+
+**时序**：
+
 ```text
-发送端 HCA                                    接收端 HCA
-┌─────────┐     ┌──────────┐     ┌─────────┐
-│  App    │     │  Switch  │     │  App    │
-│    │    │     │          │     │    │    │
-│  RoCE   │     │ PFC+ECN  │     │  RoCE   │
-│  Tx     │────▶│ WRED     │────▶│  Rx     │
-│    │    │     │          │     │    │    │
-│ DCQCN   │◀────│ PFC      │────▶│ DCQCN   │
-│(拥塞控制)│     │ PAUSE    │     │(拥塞控制)│
-└─────────┘     └──────────┘     └─────────┘
-
-三者关系：
-1. PFC（Priority Flow Control）= 链路层反压
-   - 接收端 buffer 即将满时，发 PAUSE 帧给上游
-   - 按优先级（0-7）独立控制，只暂停对应优先级
-   - 作用范围：逐跳（hop-by-hop）
-
-2. ECN（Explicit Congestion Notification）= 拥塞通知
-   - 交换机检测队列拥塞（超过阈值），在 IP 头标记 CE bit
-   - 接收端收到 CE 标记的包，发 CNP（Congestion Notification Packet）给发送端
-   - 作用范围：端到端
-
-3. DCQCN = NVIDIA/Mellanox 的拥塞控制算法
-   - 发送端收到 CNP 后降低发送速率
-   - 无 CNP 时逐步恢复速率
-   - 类似 TCP 的 AIMD，但专为 RDMA 设计
-
-时序：
-  T0: 流量突增 → 交换机队列深度上升
-  T1: 队列深度 > ECN min_threshold → 开始标记 CE
-  T2: 接收端收到 CE → 发送 CNP
-  T3: 发送端收到 CNP → 降速
-  T4: 如果降速不够快，队列继续涨 → 达到 PFC 阈值 → 发 PAUSE
-  T5: 上游暂停发送 → 队列回退 → PAUSE 解除
-
-  关键：ECN 阈值 < PFC 阈值，ECN 先于 PFC 触发
-  如果 ECN 阈值 > PFC 阈值，PFC 先触发，PAUSE 风暴风险↑
+T0: 流量突增 → 交换机队列深度上升
+T1: 队列深度 > ECN min_threshold → 开始标记 CE
+T2: 接收端收到 CE → 发送 CNP
+T3: 发送端收到 CNP → 降速
+T4: 降速不够快则队列继续涨 → 达到 PFC 阈值 → 发 PAUSE
+T5: 上游暂停发送 → 队列回退 → PAUSE 解除
 ```
+
 
 ### 6.2 交换机侧配置
 

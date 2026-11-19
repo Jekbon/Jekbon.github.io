@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 640" role="img" aria-label="Kubernetes GPU 组件栈：Control Plane 四个组件，Worker 节点上 NFD/GFD/MIG/DCGM 汇入 Device Plugin，再到驱动与 CUDA Runtime">
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8a8a8a"/>
+    </marker>
+    <style>
+      text { font-family: Inter, -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; fill: #e6e6e6; }
+      .t  { font-size: 14.5px; }
+      .ts { font-size: 12.5px; fill: #a4a4a4; }
+      .ttl{ font-size: 15px; font-weight: 600; fill: #e25822; }
+      .box  { fill: #1c1d20; stroke: #e25822; stroke-width: 1.4; rx: 6; }
+      .zone { fill: #141518; stroke: #4a4b50; stroke-width: 1.2; stroke-dasharray: 6 4; rx: 10; }
+      .ln   { stroke: #8a8a8a; stroke-width: 1.4; fill: none; }
+    </style>
+  </defs>
+  <rect x="0" y="0" width="960" height="640" rx="12" fill="#16171a"/>
+
+  <rect class="zone" x="40" y="26" width="880" height="140"/>
+  <text class="ttl" x="480" y="52" text-anchor="middle">Control Plane</text>
+  <rect class="box" x="70"  y="70" width="180" height="72"/>
+  <text class="t" x="160" y="98" text-anchor="middle">apiserver</text>
+  <text class="ts" x="160" y="120" text-anchor="middle">(ClusterPolicy CR)</text>
+  <rect class="box" x="290" y="70" width="180" height="72"/>
+  <text class="t" x="380" y="98" text-anchor="middle">GPU Operator</text>
+  <text class="ts" x="380" y="120" text-anchor="middle">(reconcile)</text>
+  <rect class="box" x="510" y="70" width="180" height="72"/>
+  <text class="t" x="600" y="98" text-anchor="middle">Volcano / Kueue</text>
+  <text class="ts" x="600" y="120" text-anchor="middle">批量调度</text>
+  <rect class="box" x="730" y="70" width="160" height="72"/>
+  <text class="t" x="810" y="98" text-anchor="middle">Training Operator</text>
+  <text class="ts" x="810" y="120" text-anchor="middle">(PyTorchJob)</text>
+  <path class="ln" d="M290,106 L250,106" marker-end="url(#ar)"/>
+
+  <path class="ln" d="M160,166 L160,214" marker-end="url(#ar)"/>
+  <path class="ln" d="M480,166 L480,214" marker-end="url(#ar)"/>
+  <path class="ln" d="M810,166 L810,214" marker-end="url(#ar)"/>
+
+  <rect class="zone" x="40" y="214" width="880" height="400"/>
+  <text class="ttl" x="480" y="240" text-anchor="middle">GPU Node (Worker)</text>
+
+  <rect class="box" x="70"  y="258" width="180" height="64"/>
+  <text class="t" x="160" y="284" text-anchor="middle">NFD</text>
+  <text class="ts" x="160" y="305" text-anchor="middle">节点特征发现</text>
+  <rect class="box" x="290" y="258" width="180" height="64"/>
+  <text class="t" x="380" y="284" text-anchor="middle">GFD</text>
+  <text class="ts" x="380" y="305" text-anchor="middle">GPU 特征打标签</text>
+  <rect class="box" x="510" y="258" width="180" height="64"/>
+  <text class="t" x="600" y="284" text-anchor="middle">MIG Manager</text>
+  <text class="ts" x="600" y="305" text-anchor="middle">MIG 切分重配</text>
+  <rect class="box" x="730" y="258" width="160" height="64"/>
+  <text class="t" x="810" y="284" text-anchor="middle">DCGM Exporter</text>
+  <text class="ts" x="810" y="305" text-anchor="middle">:9400/metrics</text>
+
+  <path class="ln" d="M160,322 L160,372" marker-end="url(#ar)"/>
+  <path class="ln" d="M380,322 L380,372" marker-end="url(#ar)"/>
+  <path class="ln" d="M600,322 L600,372" marker-end="url(#ar)"/>
+
+  <rect class="box" x="120" y="372" width="560" height="80"/>
+  <text class="t" x="400" y="402" text-anchor="middle">NVIDIA Device Plugin</text>
+  <text class="ts" x="400" y="426" text-anchor="middle">kubelet gRPC: /var/lib/kubelet/device-plugins/kubelet.sock</text>
+
+  <path class="ln" d="M400,452 L400,502" marker-end="url(#ar)"/>
+  <path class="ln" d="M810,322 L810,502 L760,502" marker-end="url(#ar)"/>
+
+  <rect class="box" x="120" y="502" width="640" height="76"/>
+  <text class="t" x="440" y="532" text-anchor="middle">NVIDIA Driver + CUDA Runtime</text>
+  <text class="ts" x="440" y="556" text-anchor="middle">/dev/nvidia*   /dev/nvidiactl</text>
+</svg>

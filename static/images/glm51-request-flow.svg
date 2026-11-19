@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 1240" role="img" aria-label="GLM-5.1 请求流全链路：客户端三条路径进入 vLLM 七节点，节点四与 LMCache Server 双向交互">
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8a8a8a"/>
+    </marker>
+    <style>
+      text { font-family: Inter, -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; fill: #e6e6e6; }
+      .t  { font-size: 15px; }
+      .ts { font-size: 13px; fill: #a4a4a4; }
+      .ttl{ font-size: 16px; font-weight: 600; fill: #e25822; }
+      .box  { fill: #1c1d20; stroke: #e25822; stroke-width: 1.4; rx: 6; }
+      .zone { fill: #141518; stroke: #4a4b50; stroke-width: 1.2; stroke-dasharray: 6 4; rx: 10; }
+      .ln   { stroke: #8a8a8a; stroke-width: 1.4; fill: none; }
+    </style>
+  </defs>
+
+  <rect x="0" y="0" width="960" height="1240" rx="12" fill="#16171a"/>
+
+  <!-- 客户端与三条路径 -->
+  <rect class="box" x="410" y="28" width="140" height="42"/>
+  <text class="t" x="480" y="55" text-anchor="middle">客户端</text>
+
+  <rect class="box" x="40"  y="112" width="250" height="46"/>
+  <text class="t" x="165" y="141" text-anchor="middle">路径A：直连 :8113</text>
+  <rect class="box" x="330" y="112" width="300" height="46"/>
+  <text class="t" x="480" y="131" text-anchor="middle">路径B：LiteLLM :4000 →</text>
+  <text class="t" x="480" y="149" text-anchor="middle">host.docker.internal:8113</text>
+  <rect class="box" x="670" y="112" width="250" height="46"/>
+  <text class="t" x="795" y="131" text-anchor="middle">路径C：socat 转发</text>
+  <text class="ts" x="795" y="149" text-anchor="middle">（指向其他模型时）</text>
+
+  <path class="ln" d="M450,70 L165,112"  marker-end="url(#ar)"/>
+  <path class="ln" d="M480,70 L480,112"  marker-end="url(#ar)"/>
+  <path class="ln" d="M510,70 L795,112"  marker-end="url(#ar)"/>
+  <path class="ln" d="M165,158 L450,246" marker-end="url(#ar)"/>
+  <path class="ln" d="M480,158 L480,246" marker-end="url(#ar)"/>
+  <path class="ln" d="M795,158 L510,246" marker-end="url(#ar)"/>
+
+  <!-- vLLM Engine 区域 -->
+  <rect class="zone" x="120" y="200" width="560" height="1000"/>
+  <text class="ttl" x="400" y="228" text-anchor="middle">vLLM Engine（容器内，TP=8）</text>
+
+  <rect class="box" x="180" y="246" width="440" height="60"/>
+  <text class="t" x="400" y="271" text-anchor="middle">① OpenAI API Server (uvicorn)</text>
+  <text class="ts" x="400" y="292" text-anchor="middle">JSON 解析 + 鉴权 (Bearer)</text>
+
+  <rect class="box" x="180" y="366" width="440" height="60"/>
+  <text class="t" x="400" y="391" text-anchor="middle">② Tokenizer</text>
+  <text class="ts" x="400" y="412" text-anchor="middle">文本 → token IDs</text>
+
+  <rect class="box" x="180" y="486" width="440" height="60"/>
+  <text class="t" x="400" y="511" text-anchor="middle">③ Async Scheduler</text>
+  <text class="ts" x="400" y="532" text-anchor="middle">请求入队 → 检查 KV Cache 复用 → 分配 Block</text>
+
+  <rect class="box" x="180" y="606" width="440" height="76"/>
+  <text class="t" x="400" y="631" text-anchor="middle">④ LMCache 查询</text>
+  <text class="ts" x="400" y="652" text-anchor="middle">命中 93.1% ← 64GB L1 内存缓存</text>
+  <text class="ts" x="400" y="671" text-anchor="middle">未命中 6.9%</text>
+
+  <rect class="box" x="180" y="742" width="440" height="80"/>
+  <text class="t" x="400" y="767" text-anchor="middle">⑤ Chunked Prefill（分块预填充）</text>
+  <text class="ts" x="400" y="788" text-anchor="middle">仅对未命中 token 做前向计算，每次最多 4096 tokens</text>
+  <text class="ts" x="400" y="808" text-anchor="middle">156 层，每层：Attention (MLA) → FFN → AllReduce</text>
+
+  <rect class="box" x="180" y="882" width="440" height="80"/>
+  <text class="t" x="400" y="907" text-anchor="middle">⑥ Decode（逐 token 生成）</text>
+  <text class="ts" x="400" y="928" text-anchor="middle">每 step：读权重 → forward → AllReduce → sample 1 token</text>
+  <text class="ts" x="400" y="948" text-anchor="middle">每 step 产生 KV → 写 GPU Block + 回写 LMCache</text>
+
+  <rect class="box" x="180" y="1022" width="440" height="56"/>
+  <text class="t" x="400" y="1055" text-anchor="middle">⑦ Detokenizer + Streaming Response (SSE)</text>
+
+  <path class="ln" d="M400,306 L400,366" marker-end="url(#ar)"/>
+  <path class="ln" d="M400,426 L400,486" marker-end="url(#ar)"/>
+  <path class="ln" d="M400,546 L400,606" marker-end="url(#ar)"/>
+  <path class="ln" d="M400,682 L400,742" marker-end="url(#ar)"/>
+  <path class="ln" d="M400,822 L400,882" marker-end="url(#ar)"/>
+  <path class="ln" d="M400,962 L400,1022" marker-end="url(#ar)"/>
+
+  <!-- LMCache Server 旁路 -->
+  <rect class="box" x="712" y="610" width="228" height="68"/>
+  <text class="t" x="826" y="636" text-anchor="middle">LMCache Server</text>
+  <text class="ts" x="826" y="657" text-anchor="middle">(Host 进程) 64GB L1 内存</text>
+  <path class="ln" d="M620,644 L712,644" marker-start="url(#ar)" marker-end="url(#ar)"/>
+  <text class="ts" x="666" y="632" text-anchor="middle">tcp://127.0.0.1:6555</text>
+</svg>

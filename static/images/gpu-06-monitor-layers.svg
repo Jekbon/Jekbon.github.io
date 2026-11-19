@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" role="img" aria-label="监控三层架构：采集层 exporter 汇入平台层 Prometheus 与 Thanos，再到展示与告警层 Grafana 与 AlertManager">
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8a8a8a"/>
+    </marker>
+    <style>
+      text { font-family: Inter, -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; fill: #e6e6e6; }
+      .t  { font-size: 14px; }
+      .ts { font-size: 12px; fill: #a4a4a4; }
+      .ttl{ font-size: 15px; font-weight: 600; fill: #e25822; }
+      .box  { fill: #1c1d20; stroke: #e25822; stroke-width: 1.3; rx: 6; }
+      .zone { fill: #141518; stroke: #4a4b50; stroke-width: 1.2; stroke-dasharray: 6 4; rx: 10; }
+      .ln   { stroke: #8a8a8a; stroke-width: 1.4; fill: none; }
+    </style>
+  </defs>
+  <rect x="0" y="0" width="960" height="560" rx="12" fill="#16171a"/>
+
+  <rect class="zone" x="40" y="26" width="880" height="120"/>
+  <text class="ttl" x="480" y="52" text-anchor="middle">展示与告警层（Grafana + AlertManager）</text>
+  <rect class="box" x="150" y="68" width="180" height="56"/>
+  <text class="t" x="240" y="101" text-anchor="middle">Dashboard</text>
+  <rect class="box" x="390" y="68" width="180" height="56"/>
+  <text class="t" x="480" y="101" text-anchor="middle">AlertManager</text>
+  <rect class="box" x="630" y="68" width="180" height="56"/>
+  <text class="t" x="720" y="92" text-anchor="middle">Runbook /</text>
+  <text class="t" x="720" y="112" text-anchor="middle">PagerDuty</text>
+
+  <path class="ln" d="M480,166 L480,146" marker-end="url(#ar)"/>
+
+  <rect class="zone" x="40" y="166" width="880" height="120"/>
+  <text class="ttl" x="480" y="192" text-anchor="middle">平台层（Prometheus + Thanos / VictoriaMetrics）</text>
+  <rect class="box" x="90"  y="208" width="170" height="56"/>
+  <text class="t" x="175" y="231" text-anchor="middle">Prometheus</text>
+  <text class="ts" x="175" y="250" text-anchor="middle">(per-shard)</text>
+  <rect class="box" x="300" y="208" width="170" height="56"/>
+  <text class="t" x="385" y="231" text-anchor="middle">Thanos Sidecar</text>
+  <text class="ts" x="385" y="250" text-anchor="middle">长期存储</text>
+  <rect class="box" x="510" y="208" width="170" height="56"/>
+  <text class="t" x="595" y="231" text-anchor="middle">Loki</text>
+  <text class="ts" x="595" y="250" text-anchor="middle">日志</text>
+  <rect class="box" x="720" y="208" width="170" height="56"/>
+  <text class="t" x="805" y="231" text-anchor="middle">Tempo / Jaeger</text>
+  <text class="ts" x="805" y="250" text-anchor="middle">链路追踪</text>
+
+  <path class="ln" d="M480,306 L480,286" marker-end="url(#ar)"/>
+
+  <rect class="zone" x="40" y="306" width="880" height="228"/>
+  <text class="ttl" x="480" y="332" text-anchor="middle">采集层（Exporter + Agent）</text>
+  <rect class="box" x="70"  y="350" width="150" height="64"/>
+  <text class="t" x="145" y="376" text-anchor="middle">dcgm-exporter</text>
+  <text class="ts" x="145" y="398" text-anchor="middle">GPU</text>
+  <rect class="box" x="240" y="350" width="150" height="64"/>
+  <text class="t" x="315" y="376" text-anchor="middle">node-exporter</text>
+  <text class="ts" x="315" y="398" text-anchor="middle">系统</text>
+  <rect class="box" x="410" y="350" width="150" height="64"/>
+  <text class="t" x="485" y="376" text-anchor="middle">snmp-exporter</text>
+  <text class="ts" x="485" y="398" text-anchor="middle">交换机</text>
+  <rect class="box" x="580" y="350" width="150" height="64"/>
+  <text class="t" x="655" y="376" text-anchor="middle">kube-state-</text>
+  <text class="ts" x="655" y="398" text-anchor="middle">metrics</text>
+  <rect class="box" x="750" y="350" width="140" height="64"/>
+  <text class="t" x="820" y="382" text-anchor="middle">kubelet</text>
+  <rect class="box" x="70"  y="434" width="150" height="64"/>
+  <text class="t" x="145" y="460" text-anchor="middle">ethtool</text>
+  <text class="ts" x="145" y="482" text-anchor="middle">RoCE 计数器</text>
+  <rect class="box" x="240" y="434" width="150" height="64"/>
+  <text class="t" x="315" y="460" text-anchor="middle">textfile</text>
+  <text class="ts" x="315" y="482" text-anchor="middle">collector</text>
+  <rect class="box" x="410" y="434" width="150" height="64"/>
+  <text class="t" x="485" y="460" text-anchor="middle">promtail</text>
+  <text class="ts" x="485" y="482" text-anchor="middle">日志采集</text>
+  <rect class="box" x="580" y="434" width="150" height="64"/>
+  <text class="t" x="655" y="460" text-anchor="middle">custom</text>
+  <text class="ts" x="655" y="482" text-anchor="middle">exporter</text>
+</svg>

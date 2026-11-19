@@ -125,22 +125,7 @@ nvidia-smi  # 右上角 "CUDA Version: 12.4" 表示驱动支持的最高 CUDA �
 - `nvidia-container-toolkit` 在容器启动时将宿主的驱动用户态库 bind-mount 进容器
 - 因此容器内 CUDA 版本可以低于或等于宿主驱动支持的 CUDA 版本，但不能高于
 
-```text
-┌────────────────────────────────────────────────────────┐
-│ 宿主机（Host OS）                                      │
-│  内核模块：nvidia.ko / nvidia-uvm.ko（驱动 570.124.04）│
-│  用户态库：libcuda.so.570.124.04                       │
-│                                                        │
-│  ┌──────────────────────────────────────────────────┐  │
-│  │ 容器（Container）                                │  │
-│  │  CUDA Toolkit：12.8（镜像自带，用户态）          │  │
-│  │  nvidia-container-toolkit v1.17.4 注入：          │  │
-│  │    /usr/lib/x86_64-linux-gnu/libcuda.so.570.124.04│ │
-│  │    /usr/lib/x86_64-linux-gnu/libnvidia-ml.so.*  │  │
-│  │    /dev/nvidia*（设备节点）                      │  │
-│  └──────────────────────────────────────────────────┘  │
-└────────────────────────────────────────────────────────┘
-```
+![容器内 CUDA 与宿主驱动的关系：Toolkit 用户态在镜像内，驱动内核模块与 libcuda 由宿主注入](/images/gpu-02-container-cuda.svg)
 
 ---
 

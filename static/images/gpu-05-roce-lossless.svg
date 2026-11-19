@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 340" role="img" aria-label="RoCE 无损网络三要素：发送端与接收端 HCA 跑 DCQCN，交换机做 PFC 加 ECN 标记">
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8a8a8a"/>
+    </marker>
+    <style>
+      text { font-family: Inter, -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; fill: #e6e6e6; }
+      .t  { font-size: 15px; }
+      .ts { font-size: 12.5px; fill: #a4a4a4; }
+      .box { fill: #1c1d20; stroke: #e25822; stroke-width: 1.4; rx: 6; }
+      .ln  { stroke: #8a8a8a; stroke-width: 1.4; fill: none; }
+      .lnd { stroke: #8a8a8a; stroke-width: 1.4; fill: none; stroke-dasharray: 5 4; }
+    </style>
+  </defs>
+  <rect x="0" y="0" width="960" height="340" rx="12" fill="#16171a"/>
+
+  <rect class="box" x="60" y="50" width="230" height="150"/>
+  <text class="t" x="175" y="78" text-anchor="middle">发送端 HCA</text>
+  <text class="ts" x="175" y="104" text-anchor="middle">App</text>
+  <text class="ts" x="175" y="126" text-anchor="middle">RoCE Tx</text>
+  <text class="ts" x="175" y="150" text-anchor="middle">DCQCN 拥塞控制</text>
+  <text class="ts" x="175" y="174" text-anchor="middle">收到 CNP → 降速</text>
+
+  <rect class="box" x="365" y="50" width="230" height="150"/>
+  <text class="t" x="480" y="78" text-anchor="middle">Switch</text>
+  <text class="ts" x="480" y="104" text-anchor="middle">ECN：队列超阈值</text>
+  <text class="ts" x="480" y="126" text-anchor="middle">在 IP 头标 CE bit</text>
+  <text class="ts" x="480" y="150" text-anchor="middle">PFC：buffer 将满</text>
+  <text class="ts" x="480" y="174" text-anchor="middle">发 PAUSE（逐跳）</text>
+
+  <rect class="box" x="670" y="50" width="230" height="150"/>
+  <text class="t" x="785" y="78" text-anchor="middle">接收端 HCA</text>
+  <text class="ts" x="785" y="104" text-anchor="middle">App</text>
+  <text class="ts" x="785" y="126" text-anchor="middle">RoCE Rx</text>
+  <text class="ts" x="785" y="150" text-anchor="middle">DCQCN 拥塞控制</text>
+  <text class="ts" x="785" y="174" text-anchor="middle">收到 CE → 回 CNP</text>
+
+  <path class="ln" d="M290,110 L365,110" marker-end="url(#ar)"/>
+  <text class="ts" x="327" y="100" text-anchor="middle">数据</text>
+  <path class="ln" d="M595,110 L670,110" marker-end="url(#ar)"/>
+  <path class="lnd" d="M670,160 L595,160" marker-end="url(#ar)"/>
+  <text class="ts" x="632" y="150" text-anchor="middle">CNP</text>
+  <path class="lnd" d="M365,160 L290,160" marker-end="url(#ar)"/>
+  <path class="lnd" d="M480,200 L480,232" />
+  <path class="lnd" d="M365,182 L290,182" marker-end="url(#ar)"/>
+  <text class="ts" x="327" y="196" text-anchor="middle">PAUSE</text>
+
+  <text class="ts" x="60" y="268">触发顺序：ECN 阈值 &lt; PFC 阈值，ECN 先于 PFC 触发（端到端减速优先于逐跳暂停）</text>
+  <text class="ts" x="60" y="294">若 ECN 阈值 &gt; PFC 阈值：PFC 先触发，PAUSE 风暴风险上升</text>
+</svg>

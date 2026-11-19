@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 360" role="img" aria-label="节点健康池模型：healthy、suspect、maintenance 三池及流转条件">
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8a8a8a"/>
+    </marker>
+    <style>
+      text { font-family: Inter, -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; fill: #e6e6e6; }
+      .t  { font-size: 15px; font-weight: 600; }
+      .ts { font-size: 12.5px; fill: #a4a4a4; }
+      .ttl{ font-size: 16px; font-weight: 600; fill: #e25822; }
+      .box { fill: #1c1d20; stroke: #e25822; stroke-width: 1.4; rx: 6; }
+      .ln  { stroke: #8a8a8a; stroke-width: 1.4; fill: none; }
+      .lnd { stroke: #8a8a8a; stroke-width: 1.4; fill: none; stroke-dasharray: 5 4; }
+    </style>
+  </defs>
+  <rect x="0" y="0" width="960" height="360" rx="12" fill="#16171a"/>
+  <text class="ttl" x="480" y="34" text-anchor="middle">节点健康池模型</text>
+
+  <rect class="box" x="50" y="70" width="260" height="180"/>
+  <text class="t" x="180" y="100" text-anchor="middle">healthy</text>
+  <text class="ts" x="180" y="124" text-anchor="middle">正常服役</text>
+  <text class="ts" x="180" y="152" text-anchor="middle">所有指标正常</text>
+  <text class="ts" x="180" y="174" text-anchor="middle">可接受调度</text>
+
+  <rect class="box" x="350" y="70" width="260" height="180"/>
+  <text class="t" x="480" y="100" text-anchor="middle">suspect</text>
+  <text class="ts" x="480" y="124" text-anchor="middle">可疑观察中</text>
+  <text class="ts" x="480" y="152" text-anchor="middle">出现可疑信号</text>
+  <text class="ts" x="480" y="174" text-anchor="middle">不接收新 Pod</text>
+  <text class="ts" x="480" y="196" text-anchor="middle">存量 Pod 继续跑</text>
+
+  <rect class="box" x="650" y="70" width="260" height="180"/>
+  <text class="t" x="780" y="100" text-anchor="middle">maintenance</text>
+  <text class="ts" x="780" y="124" text-anchor="middle">维护下线</text>
+  <text class="ts" x="780" y="152" text-anchor="middle">已确认需要维修/升级</text>
+  <text class="ts" x="780" y="174" text-anchor="middle">完全隔离</text>
+  <text class="ts" x="780" y="196" text-anchor="middle">存量 Pod 已驱逐</text>
+
+  <path class="ln" d="M310,120 L350,120" marker-end="url(#ar)"/>
+  <text class="ts" x="330" y="108" text-anchor="middle">可疑信号</text>
+  <path class="ln" d="M610,120 L650,120" marker-end="url(#ar)"/>
+  <text class="ts" x="630" y="108" text-anchor="middle">确认故障</text>
+  <path class="lnd" d="M650,290 L310,290 L310,250" marker-end="url(#ar)"/>
+  <text class="ts" x="480" y="312" text-anchor="middle">修复并验证通过 → 回 healthy</text>
+</svg>

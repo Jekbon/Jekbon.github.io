@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 360" role="img" aria-label="容器内 CUDA 与宿主驱动的关系：容器自带 Toolkit 用户态库，驱动内核模块与 libcuda 由宿主注入">
+  <style>
+    text { font-family: Inter, -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; fill: #e6e6e6; }
+    .t  { font-size: 15px; }
+    .ts { font-size: 13px; fill: #a4a4a4; }
+    .ttl{ font-size: 16px; font-weight: 600; fill: #e25822; }
+    .box  { fill: #1c1d20; stroke: #e25822; stroke-width: 1.4; rx: 6; }
+    .zone { fill: #141518; stroke: #4a4b50; stroke-width: 1.2; stroke-dasharray: 6 4; rx: 10; }
+  </style>
+  <rect x="0" y="0" width="960" height="360" rx="12" fill="#16171a"/>
+
+  <rect class="zone" x="40" y="26" width="880" height="308"/>
+  <text class="ttl" x="480" y="56" text-anchor="middle">宿主机（Host OS）</text>
+  <text class="ts" x="480" y="82" text-anchor="middle">内核模块：nvidia.ko / nvidia-uvm.ko（驱动 570.124.04）</text>
+  <text class="ts" x="480" y="104" text-anchor="middle">用户态库：libcuda.so.570.124.04</text>
+
+  <rect class="box" x="110" y="130" width="740" height="176"/>
+  <text class="t" x="480" y="160" text-anchor="middle">容器（Container）</text>
+  <text class="ts" x="480" y="186" text-anchor="middle">CUDA Toolkit：12.8（镜像自带，纯用户态）</text>
+  <text class="ts" x="480" y="210" text-anchor="middle">nvidia-container-toolkit v1.17.4 注入：</text>
+  <text class="ts" x="480" y="232" text-anchor="middle">/usr/lib/x86_64-linux-gnu/libcuda.so.570.124.04</text>
+  <text class="ts" x="480" y="252" text-anchor="middle">/usr/lib/x86_64-linux-gnu/libnvidia-ml.so.*</text>
+  <text class="ts" x="480" y="272" text-anchor="middle">/dev/nvidia*（设备节点）</text>
+</svg>

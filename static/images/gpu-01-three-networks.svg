@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 470" role="img" aria-label="三网分离架构：管理网、业务网、IB 计算网各自独立交换与网段">
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8a8a8a"/>
+    </marker>
+    <style>
+      text { font-family: Inter, -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; fill: #e6e6e6; }
+      .t  { font-size: 15px; }
+      .ts { font-size: 12.5px; fill: #a4a4a4; }
+      .box { fill: #1c1d20; stroke: #e25822; stroke-width: 1.4; rx: 6; }
+      .ln  { stroke: #8a8a8a; stroke-width: 1.4; fill: none; }
+    </style>
+  </defs>
+  <rect x="0" y="0" width="960" height="470" rx="12" fill="#16171a"/>
+
+  <rect class="box" x="140" y="28" width="680" height="96"/>
+  <text class="t" x="480" y="54" text-anchor="middle">GPU 服务器（gpu-node-01）</text>
+  <text class="ts" x="250" y="80" text-anchor="middle">管理网口 eth0/BMC</text>
+  <text class="ts" x="250" y="100" text-anchor="middle">1GbE</text>
+  <text class="ts" x="480" y="80" text-anchor="middle">业务网口 bond0: eth1+eth2</text>
+  <text class="ts" x="480" y="100" text-anchor="middle">2×25GbE LACP</text>
+  <text class="ts" x="710" y="80" text-anchor="middle">IB HCA</text>
+  <text class="ts" x="710" y="100" text-anchor="middle">4×NDR/HDR</text>
+
+  <path class="ln" d="M250,124 L250,180" marker-end="url(#ar)"/>
+  <path class="ln" d="M480,124 L480,180" marker-end="url(#ar)"/>
+  <path class="ln" d="M710,124 L710,180" marker-end="url(#ar)"/>
+
+  <rect class="box" x="145" y="180" width="210" height="84"/>
+  <text class="t" x="250" y="206" text-anchor="middle">管理交换</text>
+  <text class="ts" x="250" y="227" text-anchor="middle">1GbE</text>
+  <text class="ts" x="250" y="246" text-anchor="middle">带外 VLAN</text>
+  <rect class="box" x="375" y="180" width="210" height="84"/>
+  <text class="t" x="480" y="206" text-anchor="middle">业务 ToR 交换</text>
+  <text class="ts" x="480" y="227" text-anchor="middle">100GbE 上行</text>
+  <text class="ts" x="480" y="246" text-anchor="middle">25GbE 下行</text>
+  <rect class="box" x="605" y="180" width="210" height="84"/>
+  <text class="t" x="710" y="206" text-anchor="middle">IB Spine/Leaf</text>
+  <text class="ts" x="710" y="227" text-anchor="middle">HDR/NDR</text>
+  <text class="ts" x="710" y="246" text-anchor="middle">计算专用</text>
+
+  <path class="ln" d="M250,264 L250,320" marker-end="url(#ar)"/>
+  <path class="ln" d="M480,264 L480,320" marker-end="url(#ar)"/>
+  <path class="ln" d="M710,264 L710,320" marker-end="url(#ar)"/>
+
+  <rect class="box" x="135" y="320" width="230" height="120"/>
+  <text class="t" x="250" y="346" text-anchor="middle">管理网段</text>
+  <text class="ts" x="250" y="369" text-anchor="middle">10.0.1.0/24</text>
+  <text class="ts" x="250" y="389" text-anchor="middle">BMC/IPMI</text>
+  <text class="ts" x="250" y="409" text-anchor="middle">iLO/iDRAC</text>
+  <rect class="box" x="365" y="320" width="230" height="120"/>
+  <text class="t" x="480" y="346" text-anchor="middle">业务网段</text>
+  <text class="ts" x="480" y="369" text-anchor="middle">10.10.0.0/16</text>
+  <text class="ts" x="480" y="389" text-anchor="middle">K8s Pod/Node</text>
+  <text class="ts" x="480" y="409" text-anchor="middle">存储 Ceph/NFS</text>
+  <rect class="box" x="595" y="320" width="230" height="120"/>
+  <text class="t" x="710" y="346" text-anchor="middle">IB 计算网段</text>
+  <text class="ts" x="710" y="369" text-anchor="middle">10.20.0.0/16</text>
+  <text class="ts" x="710" y="389" text-anchor="middle">NCCL/Gloo</text>
+  <text class="ts" x="710" y="409" text-anchor="middle">无 IP 路由</text>
+</svg>

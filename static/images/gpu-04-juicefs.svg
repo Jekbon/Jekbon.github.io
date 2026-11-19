@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" role="img" aria-label="JuiceFS 架构：元数据引擎、对象存储、本地 NVMe 缓存三者汇入客户端，经 FUSE/CSI 暴露挂载点">
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8a8a8a"/>
+    </marker>
+    <style>
+      text { font-family: Inter, -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; fill: #e6e6e6; }
+      .t  { font-size: 15px; }
+      .ts { font-size: 12.5px; fill: #a4a4a4; }
+      .ttl{ font-size: 16px; font-weight: 600; fill: #e25822; }
+      .box  { fill: #1c1d20; stroke: #e25822; stroke-width: 1.4; rx: 6; }
+      .zone { fill: #141518; stroke: #4a4b50; stroke-width: 1.2; stroke-dasharray: 6 4; rx: 10; }
+      .ln   { stroke: #8a8a8a; stroke-width: 1.4; fill: none; }
+    </style>
+  </defs>
+  <rect x="0" y="0" width="960" height="560" rx="12" fill="#16171a"/>
+
+  <rect class="zone" x="40" y="26" width="880" height="430"/>
+  <text class="ttl" x="480" y="54" text-anchor="middle">JuiceFS 架构</text>
+
+  <rect class="box" x="90" y="76" width="210" height="104"/>
+  <text class="t" x="195" y="104" text-anchor="middle">元数据引擎</text>
+  <text class="ts" x="195" y="128" text-anchor="middle">Redis / MySQL / TiKV</text>
+  <text class="ts" x="195" y="150" text-anchor="middle">文件名、目录树、inode</text>
+  <rect class="box" x="375" y="76" width="210" height="104"/>
+  <text class="t" x="480" y="104" text-anchor="middle">对象存储</text>
+  <text class="ts" x="480" y="128" text-anchor="middle">S3 / OSS / MinIO</text>
+  <text class="ts" x="480" y="150" text-anchor="middle">数据块本体</text>
+  <rect class="box" x="660" y="76" width="210" height="104"/>
+  <text class="t" x="765" y="104" text-anchor="middle">缓存层</text>
+  <text class="ts" x="765" y="128" text-anchor="middle">本地 NVMe</text>
+  <text class="ts" x="765" y="150" text-anchor="middle">热数据加速</text>
+
+  <path class="ln" d="M195,180 L195,230 L440,230" />
+  <path class="ln" d="M480,180 L480,230" />
+  <path class="ln" d="M765,180 L765,230 L520,230" />
+  <path class="ln" d="M480,230 L480,262" marker-end="url(#ar)"/>
+
+  <rect class="box" x="340" y="262" width="280" height="68"/>
+  <text class="t" x="480" y="290" text-anchor="middle">JuiceFS 客户端</text>
+  <text class="ts" x="480" y="312" text-anchor="middle">(FUSE / CSI)</text>
+
+  <path class="ln" d="M480,330 L480,372" marker-end="url(#ar)"/>
+  <rect class="box" x="340" y="372" width="280" height="64"/>
+  <text class="t" x="480" y="398" text-anchor="middle">挂载点</text>
+  <text class="ts" x="480" y="420" text-anchor="middle">/mnt/juicefs</text>
+
+  <text class="ts" x="60" y="486">读路径：查 NVMe 缓存 → 命中直接返回；未命中 → 从对象存储拉取 → 写入缓存 → 返回</text>
+  <text class="ts" x="60" y="512">写路径：写 NVMe 缓存 → 异步刷入对象存储 → 元数据写入元数据引擎</text>
+</svg>
