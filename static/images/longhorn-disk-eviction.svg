@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 300" role="img" aria-label="Longhorn 磁盘逐出：旧盘禁用调度并请求逐出后，副本逐个重建到新盘，迁移全程保持卷高可用">
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8a8a8a"/>
+    </marker>
+    <style>
+      text { font-family: Inter, -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; fill: #e6e6e6; }
+      .t  { font-size: 15px; }
+      .ts { font-size: 12.5px; fill: #a4a4a4; }
+      .ttl{ font-size: 15px; font-weight: 600; fill: #e25822; }
+      .box  { fill: #1c1d20; stroke: #e25822; stroke-width: 1.4; rx: 6; }
+      .boxd { fill: #1c1d20; stroke: #6a6a6a; stroke-width: 1.4; rx: 6; stroke-dasharray: 5 4; }
+      .rep  { fill: #24303a; stroke: #4a7a9a; stroke-width: 1; rx: 4; }
+      .repn { fill: #3a3020; stroke: #e25822; stroke-width: 1; rx: 4; }
+      .ln   { stroke: #8a8a8a; stroke-width: 1.6; fill: none; }
+    </style>
+  </defs>
+  <rect x="0" y="0" width="960" height="300" rx="12" fill="#16171a"/>
+
+  <rect class="boxd" x="50" y="40" width="360" height="220"/>
+  <text class="ttl" x="230" y="70" text-anchor="middle">旧盘 /var/lib/longhorn（根分区）</text>
+  <text class="ts" x="230" y="92" text-anchor="middle">Scheduling: Disable · Eviction Requested: True</text>
+  <rect class="rep" x="80" y="115" width="140" height="44"/>
+  <text class="ts" x="150" y="142" text-anchor="middle">replica（待逐出）</text>
+  <rect class="rep" x="240" y="115" width="140" height="44"/>
+  <text class="ts" x="310" y="142" text-anchor="middle">replica（待逐出）</text>
+  <rect class="rep" x="80" y="175" width="140" height="44"/>
+  <text class="ts" x="150" y="202" text-anchor="middle">replica（待逐出）</text>
+  <text class="ts" x="310" y="202" text-anchor="middle">……</text>
+
+  <rect class="box" x="550" y="40" width="360" height="220"/>
+  <text class="ttl" x="730" y="70" text-anchor="middle">新盘 /data/longhorn（独立数据盘）</text>
+  <text class="ts" x="730" y="92" text-anchor="middle">Scheduling: Enable</text>
+  <rect class="repn" x="580" y="115" width="140" height="44"/>
+  <text class="ts" x="650" y="142" text-anchor="middle">replica（已重建）</text>
+  <rect class="repn" x="740" y="115" width="140" height="44"/>
+  <text class="ts" x="810" y="142" text-anchor="middle">replica（Rebuilding）</text>
+  <rect class="repn" x="580" y="175" width="140" height="44"/>
+  <text class="ts" x="650" y="202" text-anchor="middle">replica（排队中）</text>
+
+  <path class="ln" d="M410,150 L550,150" marker-end="url(#ar)"/>
+  <text class="ts" x="480" y="132" text-anchor="middle">逐副本重建</text>
+  <text class="ts" x="480" y="172" text-anchor="middle">一个重建完成</text>
+  <text class="ts" x="480" y="190" text-anchor="middle">才迁下一个</text>
+  <text class="ts" x="480" y="248" text-anchor="middle">迁移全程卷保持 Attached + Healthy，业务无感</text>
+</svg>
