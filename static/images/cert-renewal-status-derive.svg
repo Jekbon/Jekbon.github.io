@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 460" role="img" aria-label="证书状态判定：单证书 phase 每轮由剩余天数派生（Error/Expired/ExpiringCritical/ExpiringSoon/Valid），整体 phase 按优先级聚合且 Expired 优先于 Error，续期进行中覆盖为 Renewing">
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8a8a8a"/>
+    </marker>
+    <style>
+      text { font-family: Inter, -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; fill: #e6e6e6; }
+      .t  { font-size: 14px; }
+      .ts { font-size: 12px; fill: #a4a4a4; }
+      .ttl{ font-size: 15px; font-weight: 600; fill: #e25822; }
+      .box  { fill: #1c1d20; stroke: #e25822; stroke-width: 1.4; rx: 6; }
+      .boxg { fill: #1c1d20; stroke: #6a6a6a; stroke-width: 1.3; rx: 6; }
+      .boxc { fill: #2a1a16; stroke: #e25822; stroke-width: 1.4; rx: 6; }
+      .ln   { stroke: #8a8a8a; stroke-width: 1.4; fill: none; }
+    </style>
+  </defs>
+  <rect x="0" y="0" width="960" height="460" rx="12" fill="#16171a"/>
+
+  <text class="ttl" x="60" y="40">单证书 phase（CheckOne 每轮派生，不持久化）</text>
+  <rect class="boxg" x="60" y="60" width="360" height="44"/>
+  <text class="t" x="240" y="87" text-anchor="middle">解析失败 → Error</text>
+  <rect class="boxc" x="60" y="118" width="360" height="44"/>
+  <text class="t" x="240" y="145" text-anchor="middle">NotAfter 早于当前 → Expired</text>
+  <rect class="box" x="60" y="176" width="360" height="44"/>
+  <text class="t" x="240" y="203" text-anchor="middle">剩余 ≤ 7 天 → ExpiringCritical</text>
+  <rect class="box" x="60" y="234" width="360" height="44"/>
+  <text class="t" x="240" y="261" text-anchor="middle">剩余 ≤ 30 天 → ExpiringSoon</text>
+  <rect class="boxg" x="60" y="292" width="360" height="44"/>
+  <text class="t" x="240" y="319" text-anchor="middle">其余 → Valid</text>
+  <text class="ts" x="60" y="362">证书文件是唯一真相源；派生状态没有</text>
+  <text class="ts" x="60" y="380">「存的状态与现实不一致」这一类 bug</text>
+
+  <path class="ln" d="M420,140 L520,140" marker-end="url(#ar)"/>
+  <path class="ln" d="M420,82 L520,82" marker-end="url(#ar)"/>
+  <path class="ln" d="M420,198 L520,198" marker-end="url(#ar)"/>
+  <path class="ln" d="M420,256 L520,256" marker-end="url(#ar)"/>
+  <path class="ln" d="M420,314 L520,314" marker-end="url(#ar)"/>
+
+  <text class="ttl" x="520" y="40">整体 status.phase（computePhase 按优先级短路）</text>
+  <rect class="boxc" x="520" y="60" width="380" height="44"/>
+  <text class="t" x="710" y="87" text-anchor="middle">任一 Expired → Critical</text>
+  <rect class="box" x="520" y="118" width="380" height="44"/>
+  <text class="t" x="710" y="145" text-anchor="middle">否则任一 Error → Error</text>
+  <rect class="box" x="520" y="176" width="380" height="44"/>
+  <text class="t" x="710" y="203" text-anchor="middle">否则任一 Expiring* → Warning</text>
+  <rect class="boxg" x="520" y="234" width="380" height="44"/>
+  <text class="t" x="710" y="261" text-anchor="middle">否则 → Healthy</text>
+  <rect class="box" x="520" y="292" width="380" height="44"/>
+  <text class="t" x="710" y="319" text-anchor="middle">Phase 3 拿锁后覆盖为 Renewing</text>
+
+  <text class="ts" x="520" y="362">Expired 优先于 Error 是刻意的：过期意味着集群</text>
+  <text class="ts" x="520" y="380">已经在掉线，比「读不到某个文件」更紧急，</text>
+  <text class="ts" x="520" y="398">两者的紧急程度不该被平均掉</text>
+  <text class="ts" x="520" y="432">Renewing 绕过聚合直到 Phase 8 结束，避免监控闪烁</text>
+</svg>

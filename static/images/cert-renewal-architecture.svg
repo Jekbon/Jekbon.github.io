@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" role="img" aria-label="整体架构：每个 control-plane 节点一个 Operator Pod，exec 宿主机 kubeadm 续期 PKI 并轮转 static pod manifest，HA 用 Lease 串行化，状态写回 CR 的本节点分片，Prometheus 抓取指标并外发通知">
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8a8a8a"/>
+    </marker>
+    <style>
+      text { font-family: Inter, -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; fill: #e6e6e6; }
+      .t  { font-size: 14.5px; }
+      .ts { font-size: 12px; fill: #a4a4a4; }
+      .ttl{ font-size: 15px; font-weight: 600; fill: #e25822; }
+      .box  { fill: #1c1d20; stroke: #e25822; stroke-width: 1.4; rx: 6; }
+      .boxg { fill: #1c1d20; stroke: #6a6a6a; stroke-width: 1.3; rx: 6; }
+      .zone { fill: #141518; stroke: #4a4b50; stroke-width: 1.2; stroke-dasharray: 6 4; rx: 10; }
+      .ln   { stroke: #8a8a8a; stroke-width: 1.5; fill: none; }
+      .lnd  { stroke: #8a8a8a; stroke-width: 1.4; fill: none; stroke-dasharray: 5 4; }
+    </style>
+  </defs>
+  <rect x="0" y="0" width="960" height="560" rx="12" fill="#16171a"/>
+
+  <rect class="zone" x="40" y="30" width="540" height="330"/>
+  <text class="ttl" x="60" y="56">Control-Plane 节点 1</text>
+  <rect class="box" x="70" y="76" width="200" height="56"/>
+  <text class="t" x="170" y="100" text-anchor="middle">Operator Pod</text>
+  <text class="ts" x="170" y="118" text-anchor="middle">DaemonSet · 每节点一个</text>
+  <rect class="boxg" x="330" y="76" width="220" height="56"/>
+  <text class="t" x="440" y="100" text-anchor="middle">/usr/bin/kubeadm</text>
+  <text class="ts" x="440" y="118" text-anchor="middle">hostPath 挂载 · exec</text>
+  <rect class="boxg" x="330" y="170" width="220" height="64"/>
+  <text class="t" x="440" y="194" text-anchor="middle">/etc/kubernetes/pki/</text>
+  <text class="ts" x="440" y="214" text-anchor="middle">*.conf · 读写与备份</text>
+  <rect class="boxg" x="70" y="170" width="200" height="64"/>
+  <text class="t" x="170" y="194" text-anchor="middle">Static Pods</text>
+  <text class="ts" x="170" y="214" text-anchor="middle">apiserver · etcd · sched · cm</text>
+  <rect class="boxg" x="70" y="272" width="480" height="56"/>
+  <text class="t" x="310" y="296" text-anchor="middle">备份目录 /etc/kubernetes/pki-backup/（0700）</text>
+  <text class="ts" x="310" y="314" text-anchor="middle">保留最近 5 份 · 含私钥</text>
+  <path class="ln" d="M270,104 L330,104" marker-end="url(#ar)"/>
+  <path class="ln" d="M440,132 L440,170" marker-end="url(#ar)"/>
+  <text class="ts" x="452" y="156">certs renew</text>
+  <path class="ln" d="M330,202 L270,202" marker-end="url(#ar)"/>
+  <text class="ts" x="300" y="192">manifest 轮转</text>
+  <path class="lnd" d="M170,234 L170,272" marker-end="url(#ar)"/>
+
+  <rect class="zone" x="40" y="380" width="540" height="110"/>
+  <text class="ttl" x="60" y="406">Control-Plane 节点 2（HA 场景）</text>
+  <rect class="box" x="70" y="420" width="200" height="50"/>
+  <text class="t" x="170" y="450" text-anchor="middle">Operator Pod</text>
+
+  <rect class="zone" x="620" y="30" width="300" height="180"/>
+  <text class="ttl" x="640" y="56">集群资源</text>
+  <rect class="boxg" x="650" y="72" width="240" height="52"/>
+  <text class="t" x="770" y="94" text-anchor="middle">Lease（续期互斥锁）</text>
+  <text class="ts" x="770" y="112" text-anchor="middle">kube-system · 600s / 60s 续约</text>
+  <rect class="boxg" x="650" y="140" width="240" height="52"/>
+  <text class="t" x="770" y="162" text-anchor="middle">CertificateAutoRenewal</text>
+  <text class="ts" x="770" y="180" text-anchor="middle">cluster-scoped · status.nodes 分片</text>
+
+  <rect class="zone" x="620" y="240" width="300" height="120"/>
+  <text class="ttl" x="640" y="266">可观测</text>
+  <rect class="boxg" x="650" y="280" width="240" height="60"/>
+  <text class="t" x="770" y="304" text-anchor="middle">Prometheus</text>
+  <text class="ts" x="770" y="322" text-anchor="middle">scrape /metrics · node+cert 维度</text>
+
+  <rect class="boxg" x="620" y="390" width="300" height="60"/>
+  <text class="t" x="770" y="414" text-anchor="middle">通知</text>
+  <text class="ts" x="770" y="432" text-anchor="middle">DingTalk / Slack / Generic webhook</text>
+
+  <path class="ln" d="M580,104 L650,98" marker-end="url(#ar)"/>
+  <text class="ts" x="596" y="86">抢锁/释放</text>
+  <path class="ln" d="M580,202 L650,166" marker-end="url(#ar)"/>
+  <text class="ts" x="592" y="196">写本节点分片</text>
+  <path class="ln" d="M270,445 L620,445 L620,330 L650,310" marker-end="url(#ar)"/>
+  <path class="lnd" d="M770,340 L770,390" marker-end="url(#ar)"/>
+  <text class="ts" x="782" y="370">续期结果</text>
+</svg>

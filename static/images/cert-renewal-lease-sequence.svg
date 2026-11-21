@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 620" role="img" aria-label="Lease 抢锁时序：首抢创建、他人持有退让、持锁期间每 60 秒 CAS 续约、 defer 释放；持锁方崩溃时他节点等 600 秒过期后 CAS 接管，接管冲突则再等一轮">
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8a8a8a"/>
+    </marker>
+    <marker id="aro" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#e25822"/>
+    </marker>
+    <style>
+      text { font-family: Inter, -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; fill: #e6e6e6; }
+      .t  { font-size: 14.5px; }
+      .ts { font-size: 12px; fill: #a4a4a4; }
+      .ttl{ font-size: 14px; font-weight: 600; fill: #e25822; }
+      .box  { fill: #1c1d20; stroke: #e25822; stroke-width: 1.4; rx: 6; }
+      .life { stroke: #4a4b50; stroke-width: 1.2; stroke-dasharray: 4 4; }
+      .ln   { stroke: #8a8a8a; stroke-width: 1.5; fill: none; }
+      .lno  { stroke: #e25822; stroke-width: 1.5; fill: none; }
+      .zone { fill: #141518; stroke: #4a4b50; stroke-width: 1.1; stroke-dasharray: 6 4; rx: 8; }
+    </style>
+  </defs>
+  <rect x="0" y="0" width="960" height="620" rx="12" fill="#16171a"/>
+
+  <rect class="box" x="110" y="26" width="180" height="44"/>
+  <text class="t" x="200" y="53" text-anchor="middle">节点1 Operator</text>
+  <rect class="box" x="400" y="26" width="180" height="44"/>
+  <text class="t" x="490" y="53" text-anchor="middle">Lease</text>
+  <rect class="box" x="690" y="26" width="180" height="44"/>
+  <text class="t" x="780" y="53" text-anchor="middle">节点2 Operator</text>
+  <path class="life" d="M200,70 L200,596"/>
+  <path class="life" d="M490,70 L490,596"/>
+  <path class="life" d="M780,70 L780,596"/>
+
+  <path class="ln" d="M200,100 L490,100" marker-end="url(#ar)"/>
+  <text class="ts" x="345" y="92" text-anchor="middle">Get Lease → NotFound</text>
+  <path class="ln" d="M200,130 L490,130" marker-end="url(#ar)"/>
+  <text class="ts" x="345" y="122" text-anchor="middle">Create holder=节点1, duration=600s → 获得锁</text>
+
+  <path class="ln" d="M780,166 L490,166" marker-end="url(#ar)"/>
+  <text class="ts" x="635" y="158" text-anchor="middle">Get Lease → holder=节点1 未过期</text>
+  <path class="ln" d="M780,196 L700,196 L700,216 L780,216" marker-end="url(#ar)"/>
+  <text class="ts" x="694" y="210" text-anchor="end">退让：事件 LeaseHeld，requeue 2m</text>
+
+  <rect class="zone" x="120" y="240" width="440" height="86"/>
+  <text class="ttl" x="136" y="262">loop · 持锁期间每 60s</text>
+  <path class="ln" d="M200,286 L490,286" marker-end="url(#ar)"/>
+  <text class="ts" x="345" y="278" text-anchor="middle">Get + Update renewTime（ResourceVersion CAS）</text>
+  <path class="ln" d="M490,308 L200,308" marker-end="url(#ar)"/>
+  <text class="ts" x="345" y="322" text-anchor="middle">续约成功</text>
+
+  <path class="ln" d="M200,352 L490,352" marker-end="url(#ar)"/>
+  <text class="ts" x="345" y="344" text-anchor="middle">ReleaseLease（defer · 仅当 holder 仍是自己）</text>
+
+  <rect class="zone" x="120" y="380" width="760" height="196"/>
+  <text class="ttl" x="136" y="402">alt · 假设节点1 崩溃，未释放锁</text>
+  <path class="ln" d="M780,430 L490,430" marker-end="url(#ar)"/>
+  <text class="ts" x="635" y="422" text-anchor="middle">Get Lease → renewTime 已超过 600s</text>
+  <path class="lno" d="M780,462 L490,462" marker-end="url(#aro)"/>
+  <text class="ts" x="635" y="454" text-anchor="middle">Update holder=节点2（CAS）</text>
+  <path class="lno" d="M490,492 L780,492" marker-end="url(#aro)"/>
+  <text class="ts" x="635" y="484" text-anchor="middle">CAS 成功 → 接管，开始续期</text>
+  <path class="ln" d="M490,524 L780,524" marker-end="url(#ar)"/>
+  <text class="ts" x="635" y="516" text-anchor="middle">CAS 冲突（又有别人抢先）→ 返回 false，下一轮重试</text>
+  <text class="ts" x="136" y="560">崩溃接管的最坏延迟 = 锁有效期 600s；这是可用性与互斥性的交换</text>
+</svg>
